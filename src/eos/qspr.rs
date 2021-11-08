@@ -64,6 +64,7 @@ const AP_400: [f64; 6] = [
 ];
 
 #[derive(Debug)]
+#[allow(clippy::upper_case_acronyms)]
 pub struct QSPR {
     pub parameters: Rc<PcSaftParameters>,
 }
