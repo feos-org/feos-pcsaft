@@ -416,168 +416,168 @@ impl Parameter for PcSaftParameters {
 pub mod utils {
     use super::*;
     use feos_core::joback::JobackRecord;
-    use feos_core::parameter::SegmentRecord;
+    // use feos_core::parameter::SegmentRecord;
 
-    pub fn pure_record_vec() -> Vec<PureRecord<PcSaftRecord, JobackRecord>> {
-        let records = r#"[
-            {
-                "identifier": {
-                    "cas": "74-98-6",
-                    "name": "propane",
-                    "iupac_name": "propane",
-                    "smiles": "CCC",
-                    "inchi": "InChI=1/C3H8/c1-3-2/h3H2,1-2H3",
-                    "formula": "C3H8"
-                },
-                "model_record": {
-                    "m": 2.0018290000000003,
-                    "sigma": 3.618353,
-                    "epsilon_k": 208.1101
-                },
-                "molarweight": 44.0962,
-                "chemical_record": {
-                    "segments": ["CH3", "CH2", "CH3"]
-                }
-            },
-            {
-                "identifier": {
-                    "cas": "106-97-8",
-                    "name": "butane",
-                    "iupac_name": "butane",
-                    "smiles": "CCCC",
-                    "inchi": "InChI=1/C4H10/c1-3-4-2/h3-4H2,1-2H3",
-                    "formula": "C4H10"
-                },
-                "model_record": {
-                    "m": 2.331586,
-                    "sigma": 3.7086010000000003,
-                    "epsilon_k": 222.8774
-                },
-                "molarweight": 58.123,
-                "chemical_record": {
-                    "segments": ["CH3", "CH2", "CH2", "CH3"]
-                }
-            },
-            {
-                "identifier": {
-                    "cas": "74-82-8",
-                    "name": "methane",
-                    "iupac_name": "methane",
-                    "smiles": "C",
-                    "inchi": "InChI=1/CH4/h1H4",
-                    "formula": "CH4"
-                },
-                "model_record": {
-                    "m": 1.0,
-                    "sigma": 3.7039,
-                    "epsilon_k": 150.034
-                },
-                "molarweight": 16.0426
-            },
-            {
-                "identifier": {
-                    "cas": "124-38-9",
-                    "name": "carbon-dioxide",
-                    "iupac_name": "carbon dioxide",
-                    "smiles": "O=C=O",
-                    "inchi": "InChI=1/CO2/c2-1-3",
-                    "formula": "CO2"
-                },
-                "molarweight": 44.0098,
-                "model_record": {
-                    "m": 1.5131,
-                    "sigma": 3.1869,
-                    "epsilon_k": 163.333,
-                    "q": 4.4
-                }
-            }
-        ]"#;
-        serde_json::from_str(records).expect("Unable to parse json.")
-    }
+    // pub fn pure_record_vec() -> Vec<PureRecord<PcSaftRecord, JobackRecord>> {
+    //     let records = r#"[
+    //         {
+    //             "identifier": {
+    //                 "cas": "74-98-6",
+    //                 "name": "propane",
+    //                 "iupac_name": "propane",
+    //                 "smiles": "CCC",
+    //                 "inchi": "InChI=1/C3H8/c1-3-2/h3H2,1-2H3",
+    //                 "formula": "C3H8"
+    //             },
+    //             "model_record": {
+    //                 "m": 2.0018290000000003,
+    //                 "sigma": 3.618353,
+    //                 "epsilon_k": 208.1101
+    //             },
+    //             "molarweight": 44.0962,
+    //             "chemical_record": {
+    //                 "segments": ["CH3", "CH2", "CH3"]
+    //             }
+    //         },
+    //         {
+    //             "identifier": {
+    //                 "cas": "106-97-8",
+    //                 "name": "butane",
+    //                 "iupac_name": "butane",
+    //                 "smiles": "CCCC",
+    //                 "inchi": "InChI=1/C4H10/c1-3-4-2/h3-4H2,1-2H3",
+    //                 "formula": "C4H10"
+    //             },
+    //             "model_record": {
+    //                 "m": 2.331586,
+    //                 "sigma": 3.7086010000000003,
+    //                 "epsilon_k": 222.8774
+    //             },
+    //             "molarweight": 58.123,
+    //             "chemical_record": {
+    //                 "segments": ["CH3", "CH2", "CH2", "CH3"]
+    //             }
+    //         },
+    //         {
+    //             "identifier": {
+    //                 "cas": "74-82-8",
+    //                 "name": "methane",
+    //                 "iupac_name": "methane",
+    //                 "smiles": "C",
+    //                 "inchi": "InChI=1/CH4/h1H4",
+    //                 "formula": "CH4"
+    //             },
+    //             "model_record": {
+    //                 "m": 1.0,
+    //                 "sigma": 3.7039,
+    //                 "epsilon_k": 150.034
+    //             },
+    //             "molarweight": 16.0426
+    //         },
+    //         {
+    //             "identifier": {
+    //                 "cas": "124-38-9",
+    //                 "name": "carbon-dioxide",
+    //                 "iupac_name": "carbon dioxide",
+    //                 "smiles": "O=C=O",
+    //                 "inchi": "InChI=1/CO2/c2-1-3",
+    //                 "formula": "CO2"
+    //             },
+    //             "molarweight": 44.0098,
+    //             "model_record": {
+    //                 "m": 1.5131,
+    //                 "sigma": 3.1869,
+    //                 "epsilon_k": 163.333,
+    //                 "q": 4.4
+    //             }
+    //         }
+    //     ]"#;
+    //     serde_json::from_str(records).expect("Unable to parse json.")
+    // }
 
-    pub fn segments_vec() -> Vec<SegmentRecord<PcSaftRecord, JobackRecord>> {
-        let segments_json = r#"[
-        {
-          "identifier": "CH3",
-          "model_record": {
-            "m": 0.77247,
-            "sigma": 3.6937,
-            "epsilon_k": 181.49
-          },
-          "molarweight": 15.0345
-        },
-        {
-          "identifier": "CH2",
-          "model_record": {
-            "m": 0.7912,
-            "sigma": 3.0207,
-            "epsilon_k": 157.23
-          },
-          "molarweight": 14.02658
-        },
+    // pub fn segments_vec() -> Vec<SegmentRecord<PcSaftRecord, JobackRecord>> {
+    //     let segments_json = r#"[
+    //     {
+    //       "identifier": "CH3",
+    //       "model_record": {
+    //         "m": 0.77247,
+    //         "sigma": 3.6937,
+    //         "epsilon_k": 181.49
+    //       },
+    //       "molarweight": 15.0345
+    //     },
+    //     {
+    //       "identifier": "CH2",
+    //       "model_record": {
+    //         "m": 0.7912,
+    //         "sigma": 3.0207,
+    //         "epsilon_k": 157.23
+    //       },
+    //       "molarweight": 14.02658
+    //     },
 
-        {
-          "identifier": ">CH",
-          "model_record": {
-            "m": 0.52235,
-            "sigma": 0.99912,
-            "epsilon_k": 269.84
-          },
-          "molarweight": 13.01854
-        },
-        {
-          "identifier": ">C<",
-          "model_record": {
-            "m": -0.70131,
-            "sigma": 0.54350,
-            "epsilon_k": 0.0
-          },
-          "molarweight": 12.0107
-        },
-        {
-          "identifier": "=CH2",
-          "model_record": {
-            "m": 0.70581,
-            "sigma": 3.1630,
-            "epsilon_k": 171.34
-          },
-          "molarweight": 14.02658
-        },
-        {
-          "identifier": "=CH",
-          "model_record": {
-            "m": 0.90182,
-            "sigma": 2.8864,
-            "epsilon_k": 158.90
-          },
-          "molarweight": 13.01854
-        }
-        ]"#;
-        serde_json::from_str(segments_json).expect("Unable to parse json.")
-    }
+    //     {
+    //       "identifier": ">CH",
+    //       "model_record": {
+    //         "m": 0.52235,
+    //         "sigma": 0.99912,
+    //         "epsilon_k": 269.84
+    //       },
+    //       "molarweight": 13.01854
+    //     },
+    //     {
+    //       "identifier": ">C<",
+    //       "model_record": {
+    //         "m": -0.70131,
+    //         "sigma": 0.54350,
+    //         "epsilon_k": 0.0
+    //       },
+    //       "molarweight": 12.0107
+    //     },
+    //     {
+    //       "identifier": "=CH2",
+    //       "model_record": {
+    //         "m": 0.70581,
+    //         "sigma": 3.1630,
+    //         "epsilon_k": 171.34
+    //       },
+    //       "molarweight": 14.02658
+    //     },
+    //     {
+    //       "identifier": "=CH",
+    //       "model_record": {
+    //         "m": 0.90182,
+    //         "sigma": 2.8864,
+    //         "epsilon_k": 158.90
+    //       },
+    //       "molarweight": 13.01854
+    //     }
+    //     ]"#;
+    //     serde_json::from_str(segments_json).expect("Unable to parse json.")
+    // }
 
-    pub fn methane_parameters() -> PcSaftParameters {
-        let methane_json = r#"
-            {
-                "identifier": {
-                    "cas": "74-82-8",
-                    "name": "methane",
-                    "iupac_name": "methane",
-                    "smiles": "C",
-                    "inchi": "InChI=1/CH4/h1H4",
-                    "formula": "CH4"
-                },
-                "model_record": {
-                    "m": 1.0,
-                    "sigma": 3.7039,
-                    "epsilon_k": 150.034
-                },
-                "molarweight": 16.0426
-            }"#;
-        let methane_record: PureRecord<PcSaftRecord, JobackRecord> =
-            serde_json::from_str(methane_json).expect("Unable to parse json.");
-        PcSaftParameters::from_records(vec![methane_record], None).unwrap()
-    }
+    // pub fn methane_parameters() -> PcSaftParameters {
+    //     let methane_json = r#"
+    //         {
+    //             "identifier": {
+    //                 "cas": "74-82-8",
+    //                 "name": "methane",
+    //                 "iupac_name": "methane",
+    //                 "smiles": "C",
+    //                 "inchi": "InChI=1/CH4/h1H4",
+    //                 "formula": "CH4"
+    //             },
+    //             "model_record": {
+    //                 "m": 1.0,
+    //                 "sigma": 3.7039,
+    //                 "epsilon_k": 150.034
+    //             },
+    //             "molarweight": 16.0426
+    //         }"#;
+    //     let methane_record: PureRecord<PcSaftRecord, JobackRecord> =
+    //         serde_json::from_str(methane_json).expect("Unable to parse json.");
+    //     PcSaftParameters::from_records(vec![methane_record], None).unwrap()
+    // }
 
     pub fn propane_parameters() -> PcSaftParameters {
         let propane_json = r#"
@@ -835,154 +835,154 @@ pub mod utils {
         PcSaftParameters::from_records(binary_record, None).unwrap()
     }
 
-    pub fn water_hexane_parameters() -> PcSaftParameters {
-        let binary_json = r#"[
-        {
-            "identifier": {
-                "cas": "7732-18-5",
-                "name": "water_np",
-                "iupac_name": "oxidane",
-                "smiles": "O",
-                "inchi": "InChI=1/H2O/h1H2",
-                "formula": "H2O"
-            },
-            "model_record": {
-                "m": 1.065587,
-                "sigma": 3.000683,
-                "epsilon_k": 366.5121,
-                "kappa_ab": 0.034867983,
-                "epsilon_k_ab": 2500.6706
-            },
-            "molarweight": 18.0152
-        },
-        {
-            "identifier": {
-                "cas": "110-54-3",
-                "name": "hexane",
-                "iupac_name": "hexane",
-                "smiles": "CCCCCC",
-                "inchi": "InChI=1/C6H14/c1-3-5-6-4-2/h3-6H2,1-2H3",
-                "formula": "C6H14"
-            },
-            "model_record": {
-                "m": 3.0576,
-                "sigma": 3.7983,
-                "epsilon_k": 236.77
-            },
-            "molarweight": 86.177
-        }
-        ]"#;
-        let binary_record: Vec<PureRecord<PcSaftRecord, JobackRecord>> =
-            serde_json::from_str(binary_json).expect("Unable to parse json.");
-        PcSaftParameters::from_records(binary_record, None).unwrap()
-    }
+    // pub fn water_hexane_parameters() -> PcSaftParameters {
+    //     let binary_json = r#"[
+    //     {
+    //         "identifier": {
+    //             "cas": "7732-18-5",
+    //             "name": "water_np",
+    //             "iupac_name": "oxidane",
+    //             "smiles": "O",
+    //             "inchi": "InChI=1/H2O/h1H2",
+    //             "formula": "H2O"
+    //         },
+    //         "model_record": {
+    //             "m": 1.065587,
+    //             "sigma": 3.000683,
+    //             "epsilon_k": 366.5121,
+    //             "kappa_ab": 0.034867983,
+    //             "epsilon_k_ab": 2500.6706
+    //         },
+    //         "molarweight": 18.0152
+    //     },
+    //     {
+    //         "identifier": {
+    //             "cas": "110-54-3",
+    //             "name": "hexane",
+    //             "iupac_name": "hexane",
+    //             "smiles": "CCCCCC",
+    //             "inchi": "InChI=1/C6H14/c1-3-5-6-4-2/h3-6H2,1-2H3",
+    //             "formula": "C6H14"
+    //         },
+    //         "model_record": {
+    //             "m": 3.0576,
+    //             "sigma": 3.7983,
+    //             "epsilon_k": 236.77
+    //         },
+    //         "molarweight": 86.177
+    //     }
+    //     ]"#;
+    //     let binary_record: Vec<PureRecord<PcSaftRecord, JobackRecord>> =
+    //         serde_json::from_str(binary_json).expect("Unable to parse json.");
+    //     PcSaftParameters::from_records(binary_record, None).unwrap()
+    // }
 
-    pub fn dodecane_nitrogen_parameters() -> PcSaftParameters {
-        let binary_json = r#"[
-        {
-            "identifier": {
-                "cas": "112-40-3",
-                "name": "dodecane",
-                "iupac_name": "dodecane",
-                "smiles": "CCCCCCCCCCCC",
-                "inchi": "InChI=1/C12H26/c1-3-5-7-9-11-12-10-8-6-4-2/h3-12H2,1-2H3",
-                "formula": "C12H26"
-            },
-            "model_record": {
-                "m": 5.305758999999999,
-                "sigma": 3.895892,
-                "epsilon_k": 249.2145,
-                "viscosity": [
-                    -1.6719,
-                    -3.39020393,
-                    -0.6956429590000001,
-                    -0.154563667
-                ],
-                "diffusion": [
-                    -1.709976456320196,
-                    0.4350370700652692,
-                    0.3567181896779805,
-                    0.0,
-                    0.0
-                ]
-            },
-            "molarweight": 170.3374
-        },
-        {
-            "identifier": {
-                "cas": "7727-37-9",
-                "name": "nitrogen",
-                "iupac_name": "molecular nitrogen",
-                "smiles": "N#N",
-                "inchi": "InChI=1/N2/c1-2",
-                "formula": "N2"
-            },
-            "model_record": {
-                "m": 1.1504,
-                "sigma": 3.3848,
-                "epsilon_k": 91.4,
-                "q": 1.43,
-                "viscosity": [
-                    -0.196376646,
-                    -0.9460855,
-                    -0.0309718769,
-                    -0.0303367687
-                ],
-                "diffusion": [
-                    -0.12855765455212295,
-                    0.24885131958296933,
-                    0.08052800000000002,
-                    0.0,
-                    0.0
-                ]
-            },
-            "molarweight": 28.0134
-        }
-        ]"#;
-        let kij_json = r#"[
-        {
-          "id1": {
-                  "cas": "7727-37-9",
-                  "name": "nitrogen",
-                  "iupac_name": "molecular nitrogen",
-                  "smiles": "N#N",
-                  "inchi": "InChI=1/N2/c1-2",
-                  "formula": "N2"
-              },
-          "id2": {
-                  "cas": "112-40-3",
-                  "name": "dodecane",
-                  "iupac_name": "dodecane",
-                  "smiles": "CCCCCCCCCCCC",
-                  "inchi": "InChI=1/C12H26/c1-3-5-7-9-11-12-10-8-6-4-2/h3-12H2,1-2H3",
-                  "formula": "C12H26"
-              },
-          "k_ij": 0.1661
-        },
-        {
-          "id1": {
-                  "cas": "7727-37-9",
-                  "name": "nitrogen",
-                  "iupac_name": "molecular nitrogen",
-                  "smiles": "N#N",
-                  "inchi": "InChI=1/N2/c1-2",
-                  "formula": "N2"
-              },
-          "id2": {
-                  "cas": "74-98-6",
-                  "name": "propane",
-                  "iupac_name": "propane",
-                  "smiles": "CCC",
-                  "inchi": "InChI=1/C3H8/c1-3-2/h3H2,1-2H3",
-                  "formula": "C3H8"
-              },
-          "k_ij": 0.02512
-        }
-      ]"#;
-        let binary_record: Vec<PureRecord<PcSaftRecord, JobackRecord>> =
-            serde_json::from_str(binary_json).expect("Unable to parse json.");
-        let kij_record: Vec<BinaryRecord<Identifier, f64>> =
-            serde_json::from_str(kij_json).expect("Unable to parse binary json.");
-        PcSaftParameters::from_records(binary_record, Some(kij_record)).unwrap()
-    }
+    // pub fn dodecane_nitrogen_parameters() -> PcSaftParameters {
+    //     let binary_json = r#"[
+    //     {
+    //         "identifier": {
+    //             "cas": "112-40-3",
+    //             "name": "dodecane",
+    //             "iupac_name": "dodecane",
+    //             "smiles": "CCCCCCCCCCCC",
+    //             "inchi": "InChI=1/C12H26/c1-3-5-7-9-11-12-10-8-6-4-2/h3-12H2,1-2H3",
+    //             "formula": "C12H26"
+    //         },
+    //         "model_record": {
+    //             "m": 5.305758999999999,
+    //             "sigma": 3.895892,
+    //             "epsilon_k": 249.2145,
+    //             "viscosity": [
+    //                 -1.6719,
+    //                 -3.39020393,
+    //                 -0.6956429590000001,
+    //                 -0.154563667
+    //             ],
+    //             "diffusion": [
+    //                 -1.709976456320196,
+    //                 0.4350370700652692,
+    //                 0.3567181896779805,
+    //                 0.0,
+    //                 0.0
+    //             ]
+    //         },
+    //         "molarweight": 170.3374
+    //     },
+    //     {
+    //         "identifier": {
+    //             "cas": "7727-37-9",
+    //             "name": "nitrogen",
+    //             "iupac_name": "molecular nitrogen",
+    //             "smiles": "N#N",
+    //             "inchi": "InChI=1/N2/c1-2",
+    //             "formula": "N2"
+    //         },
+    //         "model_record": {
+    //             "m": 1.1504,
+    //             "sigma": 3.3848,
+    //             "epsilon_k": 91.4,
+    //             "q": 1.43,
+    //             "viscosity": [
+    //                 -0.196376646,
+    //                 -0.9460855,
+    //                 -0.0309718769,
+    //                 -0.0303367687
+    //             ],
+    //             "diffusion": [
+    //                 -0.12855765455212295,
+    //                 0.24885131958296933,
+    //                 0.08052800000000002,
+    //                 0.0,
+    //                 0.0
+    //             ]
+    //         },
+    //         "molarweight": 28.0134
+    //     }
+    //     ]"#;
+    //     let kij_json = r#"[
+    //     {
+    //       "id1": {
+    //               "cas": "7727-37-9",
+    //               "name": "nitrogen",
+    //               "iupac_name": "molecular nitrogen",
+    //               "smiles": "N#N",
+    //               "inchi": "InChI=1/N2/c1-2",
+    //               "formula": "N2"
+    //           },
+    //       "id2": {
+    //               "cas": "112-40-3",
+    //               "name": "dodecane",
+    //               "iupac_name": "dodecane",
+    //               "smiles": "CCCCCCCCCCCC",
+    //               "inchi": "InChI=1/C12H26/c1-3-5-7-9-11-12-10-8-6-4-2/h3-12H2,1-2H3",
+    //               "formula": "C12H26"
+    //           },
+    //       "k_ij": 0.1661
+    //     },
+    //     {
+    //       "id1": {
+    //               "cas": "7727-37-9",
+    //               "name": "nitrogen",
+    //               "iupac_name": "molecular nitrogen",
+    //               "smiles": "N#N",
+    //               "inchi": "InChI=1/N2/c1-2",
+    //               "formula": "N2"
+    //           },
+    //       "id2": {
+    //               "cas": "74-98-6",
+    //               "name": "propane",
+    //               "iupac_name": "propane",
+    //               "smiles": "CCC",
+    //               "inchi": "InChI=1/C3H8/c1-3-2/h3H2,1-2H3",
+    //               "formula": "C3H8"
+    //           },
+    //       "k_ij": 0.02512
+    //     }
+    //   ]"#;
+    //     let binary_record: Vec<PureRecord<PcSaftRecord, JobackRecord>> =
+    //         serde_json::from_str(binary_json).expect("Unable to parse json.");
+    //     let kij_record: Vec<BinaryRecord<Identifier, f64>> =
+    //         serde_json::from_str(kij_json).expect("Unable to parse binary json.");
+    //     PcSaftParameters::from_records(binary_record, Some(kij_record)).unwrap()
+    // }
 }

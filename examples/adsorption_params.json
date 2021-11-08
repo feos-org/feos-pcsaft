@@ -1,0 +1,42 @@
+[
+    {
+        "identifier": {
+            "cas": "64-17-5",
+            "name": "ethanol",
+            "iupac_name": "ethanol",
+            "smiles": "CCO",
+            "inchi": "InChI=1/C2H6O/c1-2-3/h3H,2H2,1H3",
+            "formula": "C2H6O"
+        },
+        "model_record": {
+            "m": 3.0177191329816138,
+            "sigma": 2.9146460964033283,
+            "epsilon_k": 124.58467252505255,
+            "kappa_ab": 0.10067627754508424,
+            "epsilon_k_ab": 1810.4338396651838,
+            "na": 2,
+            "nb": 2
+        },
+        "molarweight": 46.0688
+    },
+    {
+        "identifier": {
+            "cas": "67-56-1",
+            "name": "methanol",
+            "iupac_name": "methanol",
+            "smiles": "CO",
+            "inchi": "InChI=1S/CH4O/c1-2/h2H,1H3",
+            "formula": "CH4O"
+        },
+        "molarweight": 32.04216,
+        "model_record": {
+            "m": 2.4858111592517935,
+            "sigma": 2.7309279912978557,
+            "epsilon_k": 101.0845669390466,
+            "kappa_ab": 0.11953491759977186,
+            "epsilon_k_ab": 1834.845540500216,
+            "na": 2,
+            "nb": 2
+        }
+    }
+]
