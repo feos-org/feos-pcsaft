@@ -6,7 +6,7 @@ use pyo3::wrap_pymodule;
 use quantity::python::PyInit_quantity;
 
 mod eos;
-use eos::*;
+pub use eos::*;
 mod dft;
 use dft::*;
 mod parameters;
