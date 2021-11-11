@@ -26,11 +26,11 @@ fn test_bulk_implementations() -> Result<(), Box<dyn Error>> {
     let func_pure = Rc::new(PcSaftFunctional::new(params.clone()));
     let func_full = Rc::new(PcSaftFunctional::new_full(
         params.clone(),
-        FMTVersion::WhiteBear,
+        FMTVersion::KierlikRosinberg,
     ));
     let func_full_vec = Rc::new(PcSaftFunctional::new_full(
         params,
-        FMTVersion::KierlikRosinberg,
+        FMTVersion::WhiteBear,
     ));
     let t = 300.0 * KELVIN;
     let v = 0.002 * METER.powi(3) * NAV / NAV_old;
@@ -124,11 +124,11 @@ fn test_dft_propane() -> Result<(), Box<dyn Error>> {
     let func_pure = Rc::new(PcSaftFunctional::new(params.clone()));
     let func_full = Rc::new(PcSaftFunctional::new_full(
         params.clone(),
-        FMTVersion::WhiteBear,
+        FMTVersion::KierlikRosinberg,        
     ));
     let func_full_vec = Rc::new(PcSaftFunctional::new_full(
         params,
-        FMTVersion::KierlikRosinberg,
+        FMTVersion::WhiteBear,        
     ));
     let t = 200.0 * KELVIN;
     let w = 150.0 * ANGSTROM;
