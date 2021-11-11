@@ -4,10 +4,11 @@ use crate::eos::association::{assoc_site_frac_a, assoc_site_frac_ab};
 use crate::eos::dispersion::{A0, A1, A2, B0, B1, B2};
 use crate::eos::polar::{AD, AQ, BD, BQ, CD, CQ, PI_SQ_43};
 use crate::parameters::PcSaftParameters;
+use feos_core::{EosError, EosResult};
+use feos_dft::fundamental_measure_theory::FMTVersion;
 use feos_dft::{
     FunctionalContributionDual, WeightFunction, WeightFunctionInfo, WeightFunctionShape,
 };
-use feos_core::EosError;
 use ndarray::*;
 use num_dual::*;
 use std::f64::consts::{FRAC_PI_6, PI};
@@ -20,12 +21,14 @@ const N3_CUTOFF: f64 = 1e-5;
 #[derive(Clone)]
 pub struct PureFMTAssocFunctional {
     parameters: Rc<PcSaftParameters>,
+    version: FMTVersion,
 }
 
 impl PureFMTAssocFunctional {
-    pub fn new(parameters: Rc<PcSaftParameters>) -> Self {
+    pub fn new(parameters: Rc<PcSaftParameters>, version: FMTVersion) -> Self {
         Self {
-            parameters: parameters.clone(),
+            parameters,
+            version,
         }
     }
 }
@@ -54,7 +57,7 @@ impl<N: DualNum<f64> + ScalarOperand> FunctionalContributionDual<N> for PureFMTA
         &self,
         temperature: N,
         weighted_densities: ArrayView2<N>,
-    ) -> Result<Array1<N>, EosError> {
+    ) -> EosResult<Array1<N>> {
         let p = &self.parameters;
 
         // weighted densities
@@ -79,6 +82,26 @@ impl<N: DualNum<f64> + ScalarOperand> FunctionalContributionDual<N> for PureFMTA
         let n0 = n2.mapv(|n2| n2 / (r * r * 4.0 * PI));
         let n1v = n2v.mapv(|n2v| n2v / (r * 4.0 * PI));
 
+        let (n1n2, n2n2) = match self.version {
+            FMTVersion::WhiteBear => (
+                &n1 * &n2 - (&n1v * &n2v).sum_axis(Axis(0)),
+                &n2 * &n2 - (&n2v * &n2v).sum_axis(Axis(0)) * 3.0,
+            ),
+            FMTVersion::AntiSymWhiteBear => {
+                let mut xi2 = (&n2v * &n2v).sum_axis(Axis(0)) / n2.map(|n| n.powi(2));
+                xi2.iter_mut().for_each(|x| {
+                    if x.re() > 1.0 {
+                        *x = N::one()
+                    }
+                });
+                (
+                    &n1 * &n2 - (&n1v * &n2v).sum_axis(Axis(0)),
+                    &n2 * &n2 * xi2.mapv(|x| (-x + 1.0).powi(3)),
+                )
+            }
+            _ => unreachable!(),
+        };
+
         // The f3 term contains a 0/0, therefore a taylor expansion is used for small values of n3
         let mut f3 = (&n3m1 * &n3m1 * &ln31 + n3) * &n3rec * n3rec * &n3m1rec * &n3m1rec;
         f3.iter_mut().zip(n3).for_each(|(f3, &n3)| {
@@ -86,9 +109,7 @@ impl<N: DualNum<f64> + ScalarOperand> FunctionalContributionDual<N> for PureFMTA
                 *f3 = (((n3 * 35.0 / 6.0 + 4.8) * n3 + 3.75) * n3 + 8.0 / 3.0) * n3 + 1.5;
             }
         });
-        let mut phi = -(&n0 * &ln31)
-            + (n1 * n2 - (n1v * n2v).sum_axis(Axis(0))) * &n3m1rec
-            + (&n2 * &n2 - (&n2v * &n2v).sum_axis(Axis(0)) * 3.0) * n2 * PI36M1 * f3;
+        let mut phi = -(&n0 * &ln31) + n1n2 * &n3m1rec + n2n2 * n2 * PI36M1 * f3;
 
         // association
         if p.nassoc == 1 {
@@ -134,9 +155,7 @@ pub struct PureChainFunctional {
 
 impl PureChainFunctional {
     pub fn new(parameters: Rc<PcSaftParameters>) -> Self {
-        Self {
-            parameters: parameters.clone(),
-        }
+        Self { parameters }
     }
 }
 
@@ -162,7 +181,7 @@ impl<N: DualNum<f64> + ScalarOperand> FunctionalContributionDual<N> for PureChai
         &self,
         _: N,
         weighted_densities: ArrayView2<N>,
-    ) -> Result<Array1<N>, EosError> {
+    ) -> EosResult<Array1<N>> {
         let rho = weighted_densities.index_axis(Axis(0), 0);
         // negative lambdas lead to nan, therefore the absolute value is used
         let lambda = weighted_densities
@@ -188,9 +207,7 @@ pub struct PureAttFunctional {
 
 impl PureAttFunctional {
     pub fn new(parameters: Rc<PcSaftParameters>) -> Self {
-        Self {
-            parameters: parameters.clone(),
-        }
+        Self { parameters }
     }
 }
 
@@ -217,7 +234,7 @@ impl<N: DualNum<f64> + ScalarOperand> FunctionalContributionDual<N> for PureAttF
         &self,
         temperature: N,
         weighted_densities: ArrayView2<N>,
-    ) -> Result<Array1<N>, EosError> {
+    ) -> EosResult<Array1<N>> {
         let p = &self.parameters;
         let rho = weighted_densities.index_axis(Axis(0), 0);
 
