@@ -1,6 +1,7 @@
 use approx::assert_relative_eq;
 use feos_core::parameter::{IdentifierOption, Parameter};
 use feos_core::{Contributions, PhaseEquilibrium, State};
+use feos_dft::fundamental_measure_theory::FMTVersion;
 use feos_dft::interface::PlanarInterface;
 use feos_pcsaft::{PcSaft, PcSaftFunctional, PcSaftParameters};
 use ndarray::{arr1, Axis};
@@ -23,8 +24,14 @@ fn test_bulk_implementations() -> Result<(), Box<dyn Error>> {
     )?;
     let eos = Rc::new(PcSaft::new(params.clone()));
     let func_pure = Rc::new(PcSaftFunctional::new(params.clone()));
-    let func_full = Rc::new(PcSaftFunctional::new_full(params.clone(), false));
-    let func_full_vec = Rc::new(PcSaftFunctional::new_full(params, true));
+    let func_full = Rc::new(PcSaftFunctional::new_full(
+        params.clone(),
+        FMTVersion::WhiteBear,
+    ));
+    let func_full_vec = Rc::new(PcSaftFunctional::new_full(
+        params,
+        FMTVersion::KierlikRosinberg,
+    ));
     let t = 300.0 * KELVIN;
     let v = 0.002 * METER.powi(3) * NAV / NAV_old;
     let n = arr1(&[1.5]) * MOL;
@@ -115,8 +122,14 @@ fn test_dft_propane() -> Result<(), Box<dyn Error>> {
         IdentifierOption::Name,
     )?;
     let func_pure = Rc::new(PcSaftFunctional::new(params.clone()));
-    let func_full = Rc::new(PcSaftFunctional::new_full(params.clone(), false));
-    let func_full_vec = Rc::new(PcSaftFunctional::new_full(params, true));
+    let func_full = Rc::new(PcSaftFunctional::new_full(
+        params.clone(),
+        FMTVersion::WhiteBear,
+    ));
+    let func_full_vec = Rc::new(PcSaftFunctional::new_full(
+        params,
+        FMTVersion::KierlikRosinberg,
+    ));
     let t = 200.0 * KELVIN;
     let w = 150.0 * ANGSTROM;
     let points = 2048;
@@ -236,7 +249,7 @@ fn test_dft_water() -> Result<(), Box<dyn Error>> {
         IdentifierOption::Name,
     )?;
     let func_pure = Rc::new(PcSaftFunctional::new(params.clone()));
-    let func_full_vec = Rc::new(PcSaftFunctional::new_full(params, true));
+    let func_full_vec = Rc::new(PcSaftFunctional::new_full(params, FMTVersion::WhiteBear));
     let t = 400.0 * KELVIN;
     let w = 120.0 * ANGSTROM;
     let points = 2048;

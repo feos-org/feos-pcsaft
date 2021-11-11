@@ -25,24 +25,25 @@ mod pure_saft_functional;
 #[derive(Copy, Clone)]
 enum PcSaftFunctionalVariants {
     Pure,
-    FullVec,
+    WhiteBear,
+    AntiSymWhiteBear,
     FullScal,
 }
 
 impl PcSaftFunctionalVariants {
     fn from_components(n: usize) -> Self {
         if n > 1 {
-            Self::FullVec
+            Self::WhiteBear
         } else {
             Self::Pure
         }
     }
 
-    fn new_full(use_vectors: bool) -> Self {
-        if use_vectors {
-            Self::FullVec
-        } else {
-            Self::FullScal
+    fn new_full(version: FMTVersion) -> Self {
+        match version {
+            FMTVersion::WhiteBear => Self::WhiteBear,
+            FMTVersion::AntiSymWhiteBear => Self::AntiSymWhiteBear,
+            FMTVersion::KierlikRosinberg => Self::FullScal,
         }
     }
 }
@@ -64,10 +65,10 @@ impl PcSaftFunctional {
         )
     }
 
-    pub fn new_full(parameters: PcSaftParameters, use_vectors: bool) -> DFT<Self> {
+    pub fn new_full(parameters: PcSaftParameters, version: FMTVersion) -> DFT<Self> {
         Self::new_with_options(
             parameters,
-            PcSaftFunctionalVariants::new_full(use_vectors),
+            PcSaftFunctionalVariants::new_full(version),
             PcSaftOptions::default(),
         )
     }
@@ -104,7 +105,8 @@ impl PcSaftFunctional {
         } else {
             // Hard sphere contribution
             let fmt_version = match variant {
-                PcSaftFunctionalVariants::FullVec => FMTVersion::WhiteBear,
+                PcSaftFunctionalVariants::WhiteBear => FMTVersion::WhiteBear,
+                PcSaftFunctionalVariants::AntiSymWhiteBear => FMTVersion::AntiSymWhiteBear,
                 _ => FMTVersion::KierlikRosinberg,
             };
             let hs = FMTContribution::new(&parameters, fmt_version);

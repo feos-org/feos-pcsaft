@@ -47,19 +47,18 @@ impl PyPcSaftFunctional {
     /// ----------
     /// parameters: PcSaftParameters
     ///     The set of SAFT parameters.
-    /// use_vectors: bool
-    ///     Specify if vector weighted densities are used in the
-    ///     FMT term.
+    /// version: FMTVersion
+    ///     Specify the FMT term.
     ///
     /// Returns
     /// -------
     /// PcSaftFunctional
     #[staticmethod]
     #[pyo3(text_signature = "(parameters, use_vectors)")]
-    fn new_full(parameters: PyPcSaftParameters, use_vectors: bool) -> Self {
+    fn new_full(parameters: PyPcSaftParameters, version: PyFMTVersion) -> Self {
         Self(Rc::new(PcSaftFunctional::new_full(
             parameters.0.clone(),
-            use_vectors,
+            version.0.clone(),
         )))
     }
 }
@@ -100,6 +99,7 @@ pub fn dft(py: Python<'_>, m: &PyModule) -> PyResult<()> {
     m.add_class::<PySurfaceTensionDiagram>()?;
     m.add_class::<PyDFTSolver>()?;
     m.add_class::<PySolvationProfile>()?;
+    m.add_class::<PyFMTVersion>()?;
 
     let utils = PyModule::new(py, "utils")?;
     utils.add_class::<PyDataSet>()?;
