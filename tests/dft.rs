@@ -28,81 +28,57 @@ fn test_bulk_implementations() -> Result<(), Box<dyn Error>> {
         params.clone(),
         FMTVersion::KierlikRosinberg,
     ));
-    let func_full_vec = Rc::new(PcSaftFunctional::new_full(
-        params,
-        FMTVersion::WhiteBear,
-    ));
     let t = 300.0 * KELVIN;
     let v = 0.002 * METER.powi(3) * NAV / NAV_old;
     let n = arr1(&[1.5]) * MOL;
     let state = State::new_nvt(&eos, t, v, &n)?;
     let state_pure = State::new_nvt(&func_pure, t, v, &n)?;
     let state_full = State::new_nvt(&func_full, t, v, &n)?;
-    let state_full_vec = State::new_nvt(&func_full_vec, t, v, &n)?;
     let p = state.pressure_contributions();
     let p_pure = state_pure.pressure_contributions();
     let p_full = state_full.pressure_contributions();
-    let p_full_vec = state_full_vec.pressure_contributions();
 
     println!("{}: {}", p[0].0, p[0].1);
     println!("{}: {}", p_pure[0].0, p_pure[0].1);
     println!("{}: {}", p_full[0].0, p_full[0].1);
-    println!("{}: {}", p_full_vec[0].0, p_full_vec[0].1);
     println!("");
     println!("{:20}: {}", p[1].0, p[1].1);
     println!("{:20}: {}", p_pure[1].0, p_pure[1].1);
     println!("{:20}: {}", p_full[1].0, p_full[1].1);
-    println!("{:20}: {}", p_full_vec[1].0, p_full_vec[1].1);
     println!("");
     println!("{:21}: {}", p[2].0, p[2].1);
     println!("{:21}: {}", p_pure[2].0, p_pure[2].1);
     println!("{:21}: {}", p_full[2].0, p_full[2].1);
-    println!("{:21}: {}", p_full_vec[2].0, p_full_vec[2].1);
     println!("");
     println!("{:21}: {}", p[3].0, p[3].1);
     println!("{:21}: {}", p_pure[3].0, p_pure[3].1 + p_pure[4].1);
     println!("{:21}: {}", p_full[3].0, p_full[3].1 + p_full[5].1);
-    println!(
-        "{:21}: {}",
-        p_full_vec[3].0,
-        p_full_vec[3].1 + p_full_vec[5].1
-    );
     println!("");
     println!("{:21}: {}", p[4].0, p[4].1);
     println!("{:21}: {}", p_full[4].0, p_full[4].1);
-    println!("{:21}: {}", p_full_vec[4].0, p_full_vec[4].1);
 
     let ideal_gas = 1.8707534688259309 * MEGA * PASCAL * KB / KB_old;
     assert_relative_eq!(p[0].1, ideal_gas, max_relative = 1e-14,);
     assert_relative_eq!(p_pure[0].1, ideal_gas, max_relative = 1e-14,);
     assert_relative_eq!(p_full[0].1, ideal_gas, max_relative = 1e-14,);
-    assert_relative_eq!(p_full_vec[0].1, ideal_gas, max_relative = 1e-14,);
 
     let hard_sphere = 54.7102253882827583 * KILO * PASCAL * KB / KB_old;
     assert_relative_eq!(p[1].1, hard_sphere, max_relative = 1e-14,);
     assert_relative_eq!(p_full[1].1, hard_sphere, max_relative = 1e-14,);
-    assert_relative_eq!(p_full_vec[1].1, hard_sphere, max_relative = 1e-14,);
 
     let hard_chains = -2.0847750028499230 * KILO * PASCAL * KB / KB_old;
     assert_relative_eq!(p[2].1, hard_chains, max_relative = 1e-14,);
     assert_relative_eq!(p_pure[2].1 + p_pure[4].1, hard_chains, max_relative = 2e-13,);
     assert_relative_eq!(p_full[2].1 + p_full[5].1, hard_chains, max_relative = 2e-13,);
-    assert_relative_eq!(
-        p_full_vec[2].1 + p_full_vec[5].1,
-        hard_chains,
-        max_relative = 2e-13,
-    );
 
     let dispersion = -262.895932352779993 * KILO * PASCAL * KB / KB_old;
     assert_relative_eq!(p[3].1, dispersion, max_relative = 1e-14,);
     assert_relative_eq!(p_pure[3].1, dispersion, max_relative = 1e-14,);
     assert_relative_eq!(p_full[3].1, dispersion, max_relative = 1e-14,);
-    assert_relative_eq!(p_full_vec[3].1, dispersion, max_relative = 1e-14,);
 
     let association = -918.3899928262694630 * KILO * PASCAL * KB / KB_old;
     assert_relative_eq!(p[4].1, association, max_relative = 1e-14,);
     assert_relative_eq!(p_full[4].1, association, max_relative = 1e-14,);
-    assert_relative_eq!(p_full_vec[4].1, association, max_relative = 1e-14,);
 
     assert_relative_eq!(p_pure[1].1, hard_sphere + association, max_relative = 1e-14,);
     Ok(())
@@ -124,12 +100,9 @@ fn test_dft_propane() -> Result<(), Box<dyn Error>> {
     let func_pure = Rc::new(PcSaftFunctional::new(params.clone()));
     let func_full = Rc::new(PcSaftFunctional::new_full(
         params.clone(),
-        FMTVersion::KierlikRosinberg,        
+        FMTVersion::KierlikRosinberg,
     ));
-    let func_full_vec = Rc::new(PcSaftFunctional::new_full(
-        params,
-        FMTVersion::WhiteBear,        
-    ));
+    let func_full_vec = Rc::new(PcSaftFunctional::new_full(params, FMTVersion::WhiteBear));
     let t = 200.0 * KELVIN;
     let w = 150.0 * ANGSTROM;
     let points = 2048;

@@ -47,18 +47,18 @@ impl PyPcSaftFunctional {
     /// ----------
     /// parameters: PcSaftParameters
     ///     The set of SAFT parameters.
-    /// version: FMTVersion
+    /// fmt_version: FMTVersion
     ///     Specify the FMT term.
     ///
     /// Returns
     /// -------
     /// PcSaftFunctional
     #[staticmethod]
-    #[pyo3(text_signature = "(parameters, use_vectors)")]
-    fn new_full(parameters: PyPcSaftParameters, version: PyFMTVersion) -> Self {
+    #[pyo3(text_signature = "(parameters, fmt_version)")]
+    fn new_full(parameters: PyPcSaftParameters, fmt_version: PyFMTVersion) -> Self {
         Self(Rc::new(PcSaftFunctional::new_full(
             parameters.0.clone(),
-            version.0.clone(),
+            fmt_version.0.clone(),
         )))
     }
 }

@@ -22,79 +22,37 @@ mod hard_chain;
 mod polar;
 mod pure_saft_functional;
 
-#[derive(Copy, Clone)]
-enum PcSaftFunctionalVariants {
-    Pure,
-    WhiteBear,
-    AntiSymWhiteBear,
-    FullScal,
-}
-
-impl PcSaftFunctionalVariants {
-    fn from_components(n: usize) -> Self {
-        if n > 1 {
-            Self::WhiteBear
-        } else {
-            Self::Pure
-        }
-    }
-
-    fn new_full(version: FMTVersion) -> Self {
-        match version {
-            FMTVersion::WhiteBear => Self::WhiteBear,
-            FMTVersion::AntiSymWhiteBear => Self::AntiSymWhiteBear,
-            FMTVersion::KierlikRosinberg => Self::FullScal,
-        }
-    }
-}
-
 pub struct PcSaftFunctional {
     pub parameters: Rc<PcSaftParameters>,
-    variant: PcSaftFunctionalVariants,
+    fmt_version: FMTVersion,
     options: PcSaftOptions,
     contributions: Vec<Box<dyn FunctionalContribution>>,
 }
 
 impl PcSaftFunctional {
     pub fn new(parameters: PcSaftParameters) -> DFT<Self> {
-        let n: usize = parameters.m.len();
-        Self::new_with_options(
-            parameters,
-            PcSaftFunctionalVariants::from_components(n),
-            PcSaftOptions::default(),
-        )
+        Self::new_with_options(parameters, FMTVersion::WhiteBear, PcSaftOptions::default())
     }
 
-    pub fn new_full(parameters: PcSaftParameters, version: FMTVersion) -> DFT<Self> {
-        Self::new_with_options(
-            parameters,
-            PcSaftFunctionalVariants::new_full(version),
-            PcSaftOptions::default(),
-        )
+    pub fn new_full(parameters: PcSaftParameters, fmt_version: FMTVersion) -> DFT<Self> {
+        Self::new_with_options(parameters, fmt_version, PcSaftOptions::default())
     }
 
     fn new_with_options(
         parameters: PcSaftParameters,
-        variant: PcSaftFunctionalVariants,
+        fmt_version: FMTVersion,
         saft_options: PcSaftOptions,
     ) -> DFT<Self> {
-        DFT::new_homosegmented(
-            Self::with_options(parameters.clone(), variant, saft_options),
-            &parameters.m,
-        )
-    }
-
-    fn with_options(
-        parameters: PcSaftParameters,
-        variant: PcSaftFunctionalVariants,
-        saft_options: PcSaftOptions,
-    ) -> Self {
         let parameters = Rc::new(parameters);
 
         let mut contributions: Vec<Box<dyn FunctionalContribution>> = Vec::with_capacity(4);
 
-        if let PcSaftFunctionalVariants::Pure = variant {
-            let fmt_assoc = PureFMTAssocFunctional::new(parameters.clone());
+        if matches!(
+            fmt_version,
+            FMTVersion::WhiteBear | FMTVersion::AntiSymWhiteBear
+        ) && parameters.m.len() == 1
+        {
+            let fmt_assoc = PureFMTAssocFunctional::new(parameters.clone(), fmt_version);
             contributions.push(Box::new(fmt_assoc.clone()));
             if parameters.m.iter().any(|&mi| mi > 1.0) {
                 let chain = PureChainFunctional::new(parameters.clone());
@@ -104,11 +62,6 @@ impl PcSaftFunctional {
             contributions.push(Box::new(att.clone()));
         } else {
             // Hard sphere contribution
-            let fmt_version = match variant {
-                PcSaftFunctionalVariants::WhiteBear => FMTVersion::WhiteBear,
-                PcSaftFunctionalVariants::AntiSymWhiteBear => FMTVersion::AntiSymWhiteBear,
-                _ => FMTVersion::KierlikRosinberg,
-            };
             let hs = FMTContribution::new(&parameters, fmt_version);
             contributions.push(Box::new(hs.clone()));
 
@@ -133,12 +86,14 @@ impl PcSaftFunctional {
             }
         }
 
-        Self {
-            parameters,
-            variant,
+        let func = Self {
+            parameters: parameters.clone(),
+            fmt_version,
             options: saft_options,
             contributions,
-        }
+        };
+
+        DFT::new_homosegmented(func, &parameters.m)
     }
 }
 
@@ -146,7 +101,7 @@ impl HelmholtzEnergyFunctional for PcSaftFunctional {
     fn subset(&self, component_list: &[usize]) -> DFT<Self> {
         Self::new_with_options(
             self.parameters.subset(component_list),
-            self.variant,
+            self.fmt_version,
             self.options,
         )
     }
