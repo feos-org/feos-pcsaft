@@ -71,7 +71,7 @@ impl_segment_record!(PcSaftRecord, PyPcSaftRecord, JobackRecord, PyJobackRecord)
 /// ----------
 /// pure_records : List[PureRecord]
 ///     pure substance records.
-/// binary_records : List[BinarySubstanceRecord], optional
+/// binary_records : List[BinaryRecord], optional
 ///     binary saft parameter records
 /// substances : List[str], optional
 ///     The substances to use. Filters substances from `pure_records` according to
@@ -79,6 +79,10 @@ impl_segment_record!(PcSaftRecord, PyPcSaftRecord, JobackRecord, PyJobackRecord)
 ///     When not provided, all entries of `pure_records` are used.
 /// search_option : {'Name', 'Cas', 'Inchi', 'IupacName', 'Formula', 'Smiles'}, optional, defaults to 'Name'.
 ///     Identifier that is used to search substance.
+///
+/// Returns
+/// -------
+/// PcSaftParameters
 #[pyclass(name = "PcSaftParameters", unsendable)]
 #[pyo3(
     text_signature = "(pure_records, binary_records=None, substances=None, search_option='Name')"
