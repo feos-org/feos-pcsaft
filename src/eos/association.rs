@@ -7,12 +7,10 @@ use std::f64::consts::{FRAC_PI_3, PI};
 use std::fmt;
 use std::rc::Rc;
 
-#[derive(Debug, Clone)]
 pub struct Association {
     pub parameters: Rc<PcSaftParameters>,
 }
 
-#[derive(Debug, Clone)]
 pub struct CrossAssociation {
     pub parameters: Rc<PcSaftParameters>,
     pub max_iter: usize,

@@ -60,7 +60,6 @@ pub const B2: [f64; 7] = [
     -29.66690558514725,
 ];
 
-#[derive(Debug, Clone)]
 pub struct Dispersion {
     pub parameters: Rc<PcSaftParameters>,
 }
@@ -132,7 +131,7 @@ mod tests {
     #[test]
     fn helmholtz_energy() {
         let disp = Dispersion {
-            parameters: Rc::new(propane_parameters()),
+            parameters: propane_parameters(),
         };
         let t = 250.0;
         let v = 1000.0;
@@ -145,13 +144,13 @@ mod tests {
     #[test]
     fn mix() {
         let c1 = Dispersion {
-            parameters: Rc::new(propane_parameters()),
+            parameters: propane_parameters(),
         };
         let c2 = Dispersion {
-            parameters: Rc::new(butane_parameters()),
+            parameters: butane_parameters(),
         };
         let c12 = Dispersion {
-            parameters: Rc::new(propane_butane_parameters()),
+            parameters: propane_butane_parameters(),
         };
         let t = 250.0;
         let v = 2.5e28;

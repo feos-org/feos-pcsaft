@@ -14,7 +14,6 @@ impl PcSaftParameters {
     }
 }
 
-#[derive(Debug, Clone)]
 pub struct HardSphere {
     pub parameters: Rc<PcSaftParameters>,
 }
@@ -76,7 +75,7 @@ mod tests {
     #[test]
     fn helmholtz_energy() {
         let hs = HardSphere {
-            parameters: Rc::new(propane_parameters()),
+            parameters: propane_parameters(),
         };
         let t = 250.0;
         let v = 1000.0;
@@ -89,13 +88,13 @@ mod tests {
     #[test]
     fn mix() {
         let c1 = HardSphere {
-            parameters: Rc::new(propane_parameters()),
+            parameters: propane_parameters(),
         };
         let c2 = HardSphere {
-            parameters: Rc::new(butane_parameters()),
+            parameters: butane_parameters(),
         };
         let c12 = HardSphere {
-            parameters: Rc::new(propane_butane_parameters()),
+            parameters: propane_butane_parameters(),
         };
         let t = 250.0;
         let v = 2.5e28;

@@ -2,6 +2,7 @@ use crate::eos::PcSaftOptions;
 use crate::parameters::PcSaftParameters;
 use association::AssociationFunctional;
 use dispersion::AttractiveFunctional;
+use feos_core::parameter::Parameter;
 use feos_core::MolarWeight;
 use feos_dft::adsorption::FluidParameters;
 use feos_dft::fundamental_measure_theory::{FMTContribution, FMTProperties, FMTVersion};
@@ -30,21 +31,19 @@ pub struct PcSaftFunctional {
 }
 
 impl PcSaftFunctional {
-    pub fn new(parameters: PcSaftParameters) -> DFT<Self> {
+    pub fn new(parameters: Rc<PcSaftParameters>) -> DFT<Self> {
         Self::new_with_options(parameters, FMTVersion::WhiteBear, PcSaftOptions::default())
     }
 
-    pub fn new_full(parameters: PcSaftParameters, fmt_version: FMTVersion) -> DFT<Self> {
+    pub fn new_full(parameters: Rc<PcSaftParameters>, fmt_version: FMTVersion) -> DFT<Self> {
         Self::new_with_options(parameters, fmt_version, PcSaftOptions::default())
     }
 
     fn new_with_options(
-        parameters: PcSaftParameters,
+        parameters: Rc<PcSaftParameters>,
         fmt_version: FMTVersion,
         saft_options: PcSaftOptions,
     ) -> DFT<Self> {
-        let parameters = Rc::new(parameters);
-
         let mut contributions: Vec<Box<dyn FunctionalContribution>> = Vec::with_capacity(4);
 
         if matches!(
@@ -100,7 +99,7 @@ impl PcSaftFunctional {
 impl HelmholtzEnergyFunctional for PcSaftFunctional {
     fn subset(&self, component_list: &[usize]) -> DFT<Self> {
         Self::new_with_options(
-            self.parameters.subset(component_list),
+            Rc::new(self.parameters.subset(component_list)),
             self.fmt_version,
             self.options,
         )

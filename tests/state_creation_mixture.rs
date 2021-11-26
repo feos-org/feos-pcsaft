@@ -8,13 +8,13 @@ use quantity::si::*;
 use std::error::Error;
 use std::rc::Rc;
 
-fn propane_butane_parameters() -> Result<PcSaftParameters, ParameterError> {
-    PcSaftParameters::from_json(
+fn propane_butane_parameters() -> Result<Rc<PcSaftParameters>, ParameterError> {
+    Ok(Rc::new(PcSaftParameters::from_json(
         &["propane", "butane"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
-    )
+    )?))
 }
 
 #[test]

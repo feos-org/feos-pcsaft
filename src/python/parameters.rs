@@ -1,15 +1,15 @@
 use crate::parameters::{PcSaftParameters, PcSaftRecord};
 use feos_core::joback::JobackRecord;
 use feos_core::parameter::{
-    IdentifierOption, Parameter, ParameterError, PureRecord, SegmentRecord,
+    BinaryRecord, IdentifierOption, Parameter, ParameterError, PureRecord, SegmentRecord,
 };
 use feos_core::python::joback::PyJobackRecord;
-use feos_core::python::parameter::{
-    PyBinaryRecord, PyBinarySegmentRecord, PyChemicalRecord, PyIdentifier,
-};
+use feos_core::python::parameter::{PyBinarySegmentRecord, PyChemicalRecord, PyIdentifier};
 use feos_core::*;
+use numpy::PyArray2;
 use pyo3::prelude::*;
 use std::convert::TryFrom;
+use std::rc::Rc;
 
 /// Create a set of PC-Saft parameters from records.
 #[pyclass(name = "PcSaftRecord", unsendable)]
@@ -84,7 +84,7 @@ impl_segment_record!(PcSaftRecord, PyPcSaftRecord, JobackRecord, PyJobackRecord)
     text_signature = "(pure_records, binary_records=None, substances=None, search_option='Name')"
 )]
 #[derive(Clone)]
-pub struct PyPcSaftParameters(pub PcSaftParameters);
+pub struct PyPcSaftParameters(pub Rc<PcSaftParameters>);
 
 impl_parameter!(PcSaftParameters, PyPcSaftParameters);
 impl_parameter_from_segments!(PcSaftParameters, PyPcSaftParameters);

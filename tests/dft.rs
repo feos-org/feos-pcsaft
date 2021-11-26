@@ -16,16 +16,16 @@ fn test_bulk_implementations() -> Result<(), Box<dyn Error>> {
     let KB_old = 1.38064852e-23 * JOULE / KELVIN;
     let NAV_old = 6.022140857e23 / MOL;
 
-    let params = PcSaftParameters::from_json(
+    let params = Rc::new(PcSaftParameters::from_json(
         &["water_np"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
-    )?;
+    )?);
     let eos = Rc::new(PcSaft::new(params.clone()));
     let func_pure = Rc::new(PcSaftFunctional::new(params.clone()));
     let func_full = Rc::new(PcSaftFunctional::new_full(
-        params.clone(),
+        params,
         FMTVersion::KierlikRosinberg,
     ));
     let t = 300.0 * KELVIN;
@@ -91,12 +91,12 @@ fn test_dft_propane() -> Result<(), Box<dyn Error>> {
     let KB_old = 1.38064852e-23 * JOULE / KELVIN;
     let NAV_old = 6.022140857e23 / MOL;
 
-    let params = PcSaftParameters::from_json(
+    let params = Rc::new(PcSaftParameters::from_json(
         &["propane"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
-    )?;
+    )?);
     let func_pure = Rc::new(PcSaftFunctional::new(params.clone()));
     let func_full = Rc::new(PcSaftFunctional::new_full(
         params.clone(),
@@ -215,12 +215,12 @@ fn test_dft_water() -> Result<(), Box<dyn Error>> {
     let KB_old = 1.38064852e-23 * JOULE / KELVIN;
     let NAV_old = 6.022140857e23 / MOL;
 
-    let params = PcSaftParameters::from_json(
+    let params = Rc::new(PcSaftParameters::from_json(
         &["water_np"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
-    )?;
+    )?);
     let func_pure = Rc::new(PcSaftFunctional::new(params.clone()));
     let func_full_vec = Rc::new(PcSaftFunctional::new_full(params, FMTVersion::WhiteBear));
     let t = 400.0 * KELVIN;
@@ -302,7 +302,7 @@ fn test_entropy_bulk_values() -> Result<(), Box<dyn Error>> {
         None,
         IdentifierOption::Name,
     )?;
-    let func = Rc::new(PcSaftFunctional::new(params));
+    let func = Rc::new(PcSaftFunctional::new(Rc::new(params)));
     let vle = PhaseEquilibrium::pure_t(&func, 350.0 * KELVIN, None, Default::default())?;
     let profile = PlanarInterface::from_pdgt(&vle, 2048)?.solve(None)?;
     let s_res = profile.profile.entropy_density(Contributions::Residual)?;

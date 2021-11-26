@@ -1,5 +1,6 @@
 use crate::parameters::PcSaftParameters;
 use feos_core::joback::Joback;
+use feos_core::parameter::Parameter;
 use feos_core::{
     Contributions, EntropyScaling, EosError, EosResult, EosUnit, EquationOfState, HelmholtzEnergy,
     IdealGasContribution, MolarWeight, State,
@@ -53,12 +54,11 @@ pub struct PcSaft {
 }
 
 impl PcSaft {
-    pub fn new(parameters: PcSaftParameters) -> Self {
+    pub fn new(parameters: Rc<PcSaftParameters>) -> Self {
         Self::with_options(parameters, PcSaftOptions::default())
     }
 
-    pub fn with_options(parameters: PcSaftParameters, options: PcSaftOptions) -> Self {
-        let parameters = Rc::new(parameters);
+    pub fn with_options(parameters: Rc<PcSaftParameters>, options: PcSaftOptions) -> Self {
         let mut contributions: Vec<Box<dyn HelmholtzEnergy>> = Vec::with_capacity(7);
         contributions.push(Box::new(HardSphere {
             parameters: parameters.clone(),
@@ -117,17 +117,10 @@ impl EquationOfState for PcSaft {
     }
 
     fn subset(&self, component_list: &[usize]) -> Self {
-        Self::with_options(self.parameters.subset(component_list), self.options)
-        // match &self.ideal_gas {
-        //     IdealGasContributions::QSPR(_) => {
-        //         Self::with_options(self.parameters.subset(component_list), self.options, None)
-        //     }
-        //     IdealGasContributions::Joback(joback) => Self::with_options(
-        //         self.parameters.subset(component_list),
-        //         self.options,
-        //         Some(joback.parameters.subset(component_list)),
-        //     ),
-        // }
+        Self::with_options(
+            Rc::new(self.parameters.subset(component_list)),
+            self.options,
+        )
     }
 
     fn compute_max_density(&self, moles: &Array1<f64>) -> f64 {

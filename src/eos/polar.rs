@@ -181,7 +181,6 @@ fn triplet_integral_ijk_dq<D: DualNum<f64>>(mijk: f64, eta: D, c: &[[f64; 2]]) -
         .sum()
 }
 
-#[derive(Debug, Clone)]
 pub struct Dipole {
     pub parameters: Rc<PcSaftParameters>,
 }
@@ -278,7 +277,6 @@ impl fmt::Display for Dipole {
     }
 }
 
-#[derive(Debug, Clone)]
 pub struct Quadrupole {
     pub parameters: Rc<PcSaftParameters>,
 }
@@ -376,13 +374,12 @@ impl fmt::Display for Quadrupole {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Copy)]
 pub enum DQVariants {
     DQ35,
     DQ44,
 }
 
-#[derive(Debug, Clone)]
 pub struct DipoleQuadrupole {
     pub parameters: Rc<PcSaftParameters>,
     pub variant: DQVariants,

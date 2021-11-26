@@ -14,7 +14,7 @@ fn vle_pure_temperature() -> Result<(), Box<dyn Error>> {
         None,
         IdentifierOption::Name,
     )?;
-    let saft = Rc::new(PcSaft::new(params));
+    let saft = Rc::new(PcSaft::new(Rc::new(params)));
     let temperatures = [
         170.0 * KELVIN,
         200.0 * KELVIN,
@@ -42,7 +42,7 @@ fn vle_pure_pressure() -> Result<(), Box<dyn Error>> {
         None,
         IdentifierOption::Name,
     )?;
-    let saft = Rc::new(PcSaft::new(params));
+    let saft = Rc::new(PcSaft::new(Rc::new(params)));
     let pressures = [0.1 * BAR, 1.0 * BAR, 10.0 * BAR, 30.0 * BAR, 44.0 * BAR];
     for &p in pressures.iter() {
         let state = PhaseEquilibrium::pure_p(&saft, p, None, Default::default())?;
