@@ -1,14 +1,12 @@
 use feos_core::joback::JobackRecord;
-use feos_core::parameter::{
-    BinaryRecord, FromSegments, Identifier, Parameter, ParameterError, PureRecord,
-};
+use feos_core::parameter::{FromSegments, FromSegmentsBinary, Parameter, PureRecord};
 use ndarray::{Array, Array1, Array2};
 use quantity::si::{JOULE, KB, KELVIN};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 /// PcSaft parameter set.
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct PcSaftRecord {
     /// Segment number
     pub m: f64,
@@ -45,11 +43,7 @@ pub struct PcSaftRecord {
 }
 
 impl FromSegments for PcSaftRecord {
-    type Binary = f64;
-    fn from_segments(
-        segments: &[(Self, f64)],
-        _binary_records: Option<&[BinaryRecord<String, Self::Binary>]>,
-    ) -> Result<Self, ParameterError> {
+    fn from_segments(segments: &[(Self, f64)]) -> Self {
         let mut m = 0.0;
         let mut sigma3 = 0.0;
         let mut epsilon_k = 0.0;
@@ -65,45 +59,29 @@ impl FromSegments for PcSaftRecord {
         let q = match q.len() {
             0 => None,
             1 => Some(q[0]),
-            _ => {
-                return Err(ParameterError::HomoGc(String::from(
-                    "More than one segment with quadrupole moment.",
-                )))
-            }
+            _ => panic!("More than one segment with quadrupole moment."),
         };
         let mu: Vec<f64> = segments.iter().filter_map(|s| s.0.mu).collect();
         let mu = match mu.len() {
             0 => None,
             1 => Some(mu[0]),
-            _ => {
-                return Err(ParameterError::HomoGc(String::from(
-                    "More than one segment with dipole moment.",
-                )))
-            }
+            _ => panic!("More than one segment with dipole moment."),
         };
         let kappa_ab: Vec<f64> = segments.iter().filter_map(|s| s.0.kappa_ab).collect();
         let kappa_ab = match kappa_ab.len() {
             0 => None,
             1 => Some(kappa_ab[0]),
-            _ => {
-                return Err(ParameterError::HomoGc(String::from(
-                    "More than one segment with association site.",
-                )))
-            }
+            _ => panic!("More than one segment with association site."),
         };
         let epsilon_k_ab: Vec<f64> = segments.iter().filter_map(|s| s.0.epsilon_k_ab).collect();
         let epsilon_k_ab = match epsilon_k_ab.len() {
             0 => None,
             1 => Some(epsilon_k_ab[0]),
-            _ => {
-                return Err(ParameterError::HomoGc(String::from(
-                    "More than one segment with association site",
-                )))
-            }
+            _ => panic!("More than one segment with association site"),
         };
         let na = Some(1.0);
         let nb = Some(1.0);
-        Ok(Self {
+        Self {
             m,
             sigma: (sigma3 / m).cbrt(),
             epsilon_k: epsilon_k / m,
@@ -116,7 +94,7 @@ impl FromSegments for PcSaftRecord {
             viscosity: None,
             diffusion: None,
             thermal_conductivity: None,
-        })
+        }
     }
 }
 
@@ -188,7 +166,24 @@ impl PcSaftRecord {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct PcSaftBinaryRecord {
+    k_ij: f64,
+}
+
+impl From<f64> for PcSaftBinaryRecord {
+    fn from(k_ij: f64) -> Self {
+        Self { k_ij }
+    }
+}
+
+impl FromSegmentsBinary for PcSaftBinaryRecord {
+    fn from_segments_binary(segments: &[(Self, f64, f64)]) -> Self {
+        let k_ij = segments.iter().map(|(br, n1, n2)| br.k_ij * n1 * n2).sum();
+        Self { k_ij }
+    }
+}
+
 pub struct PcSaftParameters {
     pub molarweight: Array1<f64>,
     pub m: Array1<f64>,
@@ -218,29 +213,19 @@ pub struct PcSaftParameters {
     pub diffusion: Option<Array2<f64>>,
     pub thermal_conductivity: Option<Array2<f64>>,
     pub pure_records: Vec<PureRecord<PcSaftRecord, JobackRecord>>,
+    pub binary_records: Array2<PcSaftBinaryRecord>,
     pub joback_records: Option<Vec<JobackRecord>>,
-    pub binary_records: Option<Vec<BinaryRecord<Identifier, f64>>>,
-}
-
-impl PcSaftParameters {
-    pub fn subset(&self, component_list: &[usize]) -> Self {
-        let pure_records = component_list
-            .iter()
-            .map(|&i| self.pure_records[i].clone())
-            .collect();
-        Self::from_records(pure_records, self.binary_records.clone()).unwrap()
-    }
 }
 
 impl Parameter for PcSaftParameters {
     type Pure = PcSaftRecord;
     type IdealGas = JobackRecord;
-    type Binary = f64;
+    type Binary = PcSaftBinaryRecord;
 
     fn from_records(
         pure_records: Vec<PureRecord<Self::Pure, Self::IdealGas>>,
-        binary_records: Option<Vec<BinaryRecord<Identifier, Self::Binary>>>,
-    ) -> Result<Self, ParameterError> {
+        binary_records: Array2<PcSaftBinaryRecord>,
+    ) -> Self {
         let n = pure_records.len();
 
         let mut molarweight = Array::zeros(n);
@@ -318,18 +303,7 @@ impl Parameter for PcSaftParameters {
             }
         }
 
-        let mut k_ij = Array::zeros([n, n]);
-        match &binary_records {
-            Some(bs) => bs.iter().for_each(|record| {
-                let i = component_index.get(&record.id1);
-                let j = component_index.get(&record.id2);
-                if let (Some(i), Some(j)) = (i, j) {
-                    k_ij[[*i, *j]] = record.model_record;
-                    k_ij[[*j, *i]] = record.model_record
-                }
-            }),
-            None => (),
-        }
+        let k_ij = binary_records.map(|br| br.k_ij);
         let mut epsilon_k_ij = Array::zeros((n, n));
         let mut sigma_ij = Array::zeros((n, n));
         let mut e_k_ij = Array::zeros((n, n));
@@ -377,7 +351,7 @@ impl Parameter for PcSaftParameters {
             .map(|r| r.ideal_gas_record.clone())
             .collect();
 
-        Ok(Self {
+        Self {
             molarweight,
             m,
             sigma,
@@ -406,9 +380,18 @@ impl Parameter for PcSaftParameters {
             diffusion: diffusion_coefficients,
             thermal_conductivity: thermal_conductivity_coefficients,
             pure_records,
+            binary_records,
             joback_records,
-            binary_records: binary_records.map(|br| br.to_vec()),
-        })
+        }
+    }
+
+    fn records(
+        &self,
+    ) -> (
+        &[PureRecord<PcSaftRecord, JobackRecord>],
+        &Array2<PcSaftBinaryRecord>,
+    ) {
+        (&self.pure_records, &self.binary_records)
     }
 }
 
@@ -416,6 +399,7 @@ impl Parameter for PcSaftParameters {
 pub mod utils {
     use super::*;
     use feos_core::joback::JobackRecord;
+    use std::rc::Rc;
     // use feos_core::parameter::SegmentRecord;
 
     // pub fn pure_record_vec() -> Vec<PureRecord<PcSaftRecord, JobackRecord>> {
@@ -579,7 +563,7 @@ pub mod utils {
     //     PcSaftParameters::from_records(vec![methane_record], None).unwrap()
     // }
 
-    pub fn propane_parameters() -> PcSaftParameters {
+    pub fn propane_parameters() -> Rc<PcSaftParameters> {
         let propane_json = r#"
             {
                 "identifier": {
@@ -602,7 +586,7 @@ pub mod utils {
             }"#;
         let propane_record: PureRecord<PcSaftRecord, JobackRecord> =
             serde_json::from_str(propane_json).expect("Unable to parse json.");
-        PcSaftParameters::from_records(vec![propane_record], None).unwrap()
+        Rc::new(PcSaftParameters::new_pure(propane_record))
     }
 
     // pub fn propane_homogc_parameters() -> PcSaftParameters {
@@ -673,10 +657,10 @@ pub mod utils {
         }"#;
         let co2_record: PureRecord<PcSaftRecord, JobackRecord> =
             serde_json::from_str(co2_json).expect("Unable to parse json.");
-        PcSaftParameters::from_records(vec![co2_record], None).unwrap()
+        PcSaftParameters::new_pure(co2_record)
     }
 
-    pub fn butane_parameters() -> PcSaftParameters {
+    pub fn butane_parameters() -> Rc<PcSaftParameters> {
         let butane_json = r#"
             {
                 "identifier": {
@@ -696,7 +680,7 @@ pub mod utils {
             }"#;
         let butane_record: PureRecord<PcSaftRecord, JobackRecord> =
             serde_json::from_str(butane_json).expect("Unable to parse json.");
-        PcSaftParameters::from_records(vec![butane_record], None).unwrap()
+        Rc::new(PcSaftParameters::new_pure(butane_record))
     }
 
     pub fn dme_parameters() -> PcSaftParameters {
@@ -720,7 +704,7 @@ pub mod utils {
             }"#;
         let dme_record: PureRecord<PcSaftRecord, JobackRecord> =
             serde_json::from_str(dme_json).expect("Unable to parse json.");
-        PcSaftParameters::from_records(vec![dme_record], None).unwrap()
+        PcSaftParameters::new_pure(dme_record)
     }
 
     pub fn water_parameters() -> PcSaftParameters {
@@ -745,7 +729,7 @@ pub mod utils {
             }"#;
         let water_record: PureRecord<PcSaftRecord, JobackRecord> =
             serde_json::from_str(water_json).expect("Unable to parse json.");
-        PcSaftParameters::from_records(vec![water_record], None).unwrap()
+        PcSaftParameters::new_pure(water_record)
     }
 
     pub fn dme_co2_parameters() -> PcSaftParameters {
@@ -787,10 +771,10 @@ pub mod utils {
         ]"#;
         let binary_record: Vec<PureRecord<PcSaftRecord, JobackRecord>> =
             serde_json::from_str(binary_json).expect("Unable to parse json.");
-        PcSaftParameters::from_records(binary_record, None).unwrap()
+        PcSaftParameters::new_binary(binary_record, None)
     }
 
-    pub fn propane_butane_parameters() -> PcSaftParameters {
+    pub fn propane_butane_parameters() -> Rc<PcSaftParameters> {
         let binary_json = r#"[
             {
                 "identifier": {
@@ -832,7 +816,7 @@ pub mod utils {
         ]"#;
         let binary_record: Vec<PureRecord<PcSaftRecord, JobackRecord>> =
             serde_json::from_str(binary_json).expect("Unable to parse json.");
-        PcSaftParameters::from_records(binary_record, None).unwrap()
+        Rc::new(PcSaftParameters::new_binary(binary_record, None))
     }
 
     // pub fn water_hexane_parameters() -> PcSaftParameters {

@@ -58,7 +58,7 @@ impl PyPcSaft {
             max_iter_cross_assoc,
             tol_cross_assoc,
         };
-        Self(Rc::new(PcSaft::with_options(parameters.0.clone(), options)))
+        Self(Rc::new(PcSaft::with_options(parameters.0, options)))
     }
 }
 

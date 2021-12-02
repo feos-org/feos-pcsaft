@@ -7,13 +7,13 @@ use quantity::si::*;
 use std::error::Error;
 use std::rc::Rc;
 
-fn read_params(components: &[&str]) -> Result<PcSaftParameters, ParameterError> {
-    PcSaftParameters::from_json(
+fn read_params(components: &[&str]) -> Result<Rc<PcSaftParameters>, ParameterError> {
+    Ok(Rc::new(PcSaftParameters::from_json(
         components,
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
-    )
+    )?))
 }
 
 #[test]

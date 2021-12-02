@@ -10,13 +10,13 @@ use quantity::QuantityScalar;
 use std::error::Error;
 use std::rc::Rc;
 
-fn propane_parameters() -> Result<PcSaftParameters, ParameterError> {
-    PcSaftParameters::from_json(
+fn propane_parameters() -> Result<Rc<PcSaftParameters>, ParameterError> {
+    Ok(Rc::new(PcSaftParameters::from_json(
         &["propane"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
-    )
+    )?))
 }
 
 #[test]

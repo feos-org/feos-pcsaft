@@ -6,7 +6,6 @@ use num_dual::*;
 use std::fmt;
 use std::rc::Rc;
 
-#[derive(Debug, Clone)]
 pub struct HardChain {
     pub parameters: Rc<PcSaftParameters>,
 }
@@ -45,7 +44,7 @@ mod tests {
     #[test]
     fn helmholtz_energy() {
         let hc = HardChain {
-            parameters: Rc::new(propane_parameters()),
+            parameters: propane_parameters(),
         };
         let t = 250.0;
         let v = 1000.0;
@@ -58,13 +57,13 @@ mod tests {
     #[test]
     fn mix() {
         let c1 = HardChain {
-            parameters: Rc::new(propane_parameters()),
+            parameters: propane_parameters(),
         };
         let c2 = HardChain {
-            parameters: Rc::new(butane_parameters()),
+            parameters: butane_parameters(),
         };
         let c12 = HardChain {
-            parameters: Rc::new(propane_butane_parameters()),
+            parameters: propane_butane_parameters(),
         };
         let t = 250.0;
         let v = 2.5e28;

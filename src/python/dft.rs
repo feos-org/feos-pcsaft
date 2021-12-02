@@ -37,7 +37,7 @@ pub struct PyPcSaftFunctional(pub Rc<DFT<PcSaftFunctional>>);
 impl PyPcSaftFunctional {
     #[new]
     fn new(parameters: PyPcSaftParameters) -> Self {
-        Self(Rc::new(PcSaftFunctional::new(parameters.0.clone())))
+        Self(Rc::new(PcSaftFunctional::new(parameters.0)))
     }
 
     /// PCP SAFT Helmholtz energy functional without simplifications
@@ -57,8 +57,8 @@ impl PyPcSaftFunctional {
     #[pyo3(text_signature = "(parameters, fmt_version)")]
     fn new_full(parameters: PyPcSaftParameters, fmt_version: PyFMTVersion) -> Self {
         Self(Rc::new(PcSaftFunctional::new_full(
-            parameters.0.clone(),
-            fmt_version.0.clone(),
+            parameters.0,
+            fmt_version.0,
         )))
     }
 }
