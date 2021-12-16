@@ -1,7 +1,7 @@
 use crate::parameters::PcSaftParameters;
 use feos_core::{EosError, HelmholtzEnergyDual, StateHD};
 use ndarray::*;
-use ndarray_linalg::Norm;
+use num_dual::linalg::{norm, LU};
 use num_dual::*;
 use std::f64::consts::{FRAC_PI_3, PI};
 use std::fmt;
@@ -92,10 +92,7 @@ pub(crate) fn assoc_site_frac_a<D: DualNum<f64>>(deltarho: D, na: f64) -> D {
     }
 }
 
-impl<D: DualNum<f64> + ScalarOperand> HelmholtzEnergyDual<D> for CrossAssociation
-where
-    Array2<D>: SolveDual<D>,
-{
+impl<D: DualNum<f64> + ScalarOperand> HelmholtzEnergyDual<D> for CrossAssociation {
     fn helmholtz_energy(&self, state: &StateHD<D>) -> D {
         let p = &self.parameters;
 
@@ -145,7 +142,6 @@ pub fn helmholtz_energy_density_cross_association<S, D: DualNum<f64> + ScalarOpe
 ) -> Result<D, EosError>
 where
     S: Data<Elem = D>,
-    Array2<D>: SolveDual<D>,
 {
     // check if density is close to 0
     if density.sum().re() < f64::EPSILON {
@@ -224,10 +220,7 @@ fn newton_step_cross_association<D: DualNum<f64> + ScalarOperand>(
     nb: &Array1<f64>,
     rho: &Array1<D>,
     tol: f64,
-) -> Result<bool, EosError>
-where
-    Array2<D>: SolveDual<D>,
-{
+) -> Result<bool, EosError> {
     // gradient
     let mut g: Array1<D> = Array::zeros(2 * p.nassoc);
     // Hessian
@@ -259,10 +252,10 @@ where
     }
 
     // Newton step
-    x.assign(&(&*x - &h.solve(&g)?));
+    x.assign(&(&*x - &LU::new(h)?.solve(&g)));
 
     // check convergence
-    Ok(g.map(D::re).norm() < tol)
+    Ok(norm(&g.map(D::re)) < tol)
 }
 
 #[cfg(test)]

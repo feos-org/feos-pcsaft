@@ -9,13 +9,13 @@ name = "feos_pcsaft"
 crate-type = ["rlib", "cdylib"]
 
 [dependencies]
-quantity = "0.3"
-feos-core = "0.1"
-feos-dft = { git = "https://github.com/feos-org/feos-dft", branch = "main" }
-num-dual = "0.3"
+quantity = { path = "../../quantity" }
+feos-core = { path = "../feos-core" }
+feos-dft = { path = "../feos-dft" }
+#feos-dft = { git = "https://github.com/feos-org/feos-dft", branch = "main" }
+num-dual = { path = "../../num-dual" }
 num = "0.4"
 num-traits = "0.2"
-ndarray-linalg = "0.14"
 ndarray = { version = "0.15", features=["approx"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
@@ -35,9 +35,3 @@ optional = true
 [features]
 default = []
 python = ["pyo3", "quantity/python", "feos-core/python", "feos-dft/python", "numpy"]
-openblas-system = ["feos-core/openblas-system"]
-openblas-static = ["feos-core/openblas-static"]
-intel-mkl-system = ["feos-core/intel-mkl-system"]
-intel-mkl-static = ["feos-core/intel-mkl-static"]
-netlib-system = ["feos-core/netlib-system"]
-netlib-static = ["feos-core/netlib-static"]
