@@ -1,7 +1,7 @@
 [package]
 name = "feos-pcsaft"
 version = "0.1.0"
-authors = ["Gernot Bauer <bauer@itt.uni-stuttgart.de>", "Philipp Rehner <rehner@itt.uni-stuttgart.de>"]
+authors = ["Gernot Bauer <bauer@itt.uni-stuttgart.de>", "Philipp Rehner <prehner@ethz.ch>"]
 edition = "2018"
 
 [lib]
@@ -9,11 +9,10 @@ name = "feos_pcsaft"
 crate-type = ["rlib", "cdylib"]
 
 [dependencies]
-quantity = { path = "../../quantity" }
-feos-core = { path = "../feos-core" }
-feos-dft = { path = "../feos-dft" }
-#feos-dft = { git = "https://github.com/feos-org/feos-dft", branch = "main" }
-num-dual = { path = "../../num-dual" }
+quantity = "0.4"
+feos-core = "0.1"
+feos-dft = "0.1"
+num-dual = "0.4"
 num = "0.4"
 num-traits = "0.2"
 ndarray = { version = "0.15", features=["approx"] }
@@ -22,13 +21,13 @@ serde_json = "1.0"
 indexmap = "1.3.2"
 lazy_static = "1.4.0"
 thiserror = "1.0"
-numpy = { version = "0.14", optional = true }
+numpy = { version = "0.15", optional = true }
 
 [dev-dependencies]
 approx = "0.4"
 
 [dependencies.pyo3]
-version = "0.14"
+version = "0.15"
 features = ["extension-module", "abi3", "abi3-py36"]
 optional = true
 

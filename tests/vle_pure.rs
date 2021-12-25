@@ -9,7 +9,7 @@ use std::rc::Rc;
 #[test]
 fn vle_pure_temperature() -> Result<(), Box<dyn Error>> {
     let params = PcSaftParameters::from_json(
-        &["propane"],
+        vec!["propane"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
@@ -37,7 +37,7 @@ fn vle_pure_temperature() -> Result<(), Box<dyn Error>> {
 #[test]
 fn vle_pure_pressure() -> Result<(), Box<dyn Error>> {
     let params = PcSaftParameters::from_json(
-        &["propane"],
+        vec!["propane"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,

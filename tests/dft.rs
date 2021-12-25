@@ -17,7 +17,7 @@ fn test_bulk_implementations() -> Result<(), Box<dyn Error>> {
     let NAV_old = 6.022140857e23 / MOL;
 
     let params = Rc::new(PcSaftParameters::from_json(
-        &["water_np"],
+        vec!["water_np"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
@@ -92,7 +92,7 @@ fn test_dft_propane() -> Result<(), Box<dyn Error>> {
     let NAV_old = 6.022140857e23 / MOL;
 
     let params = Rc::new(PcSaftParameters::from_json(
-        &["propane"],
+        vec!["propane"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
@@ -216,7 +216,7 @@ fn test_dft_water() -> Result<(), Box<dyn Error>> {
     let NAV_old = 6.022140857e23 / MOL;
 
     let params = Rc::new(PcSaftParameters::from_json(
-        &["water_np"],
+        vec!["water_np"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
@@ -297,7 +297,7 @@ fn test_dft_water() -> Result<(), Box<dyn Error>> {
 #[test]
 fn test_entropy_bulk_values() -> Result<(), Box<dyn Error>> {
     let params = PcSaftParameters::from_json(
-        &["water_np"],
+        vec!["water_np"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
