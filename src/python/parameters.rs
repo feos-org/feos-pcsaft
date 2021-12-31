@@ -92,3 +92,17 @@ pub struct PyPcSaftParameters(pub Rc<PcSaftParameters>);
 
 impl_parameter!(PcSaftParameters, PyPcSaftParameters);
 impl_parameter_from_segments!(PcSaftParameters, PyPcSaftParameters);
+
+#[pymethods]
+impl PyPcSaftParameters {
+    fn _repr_markdown_(&self) -> String {
+        self.0.to_markdown()
+    }
+}
+
+#[pyproto]
+impl pyo3::class::basic::PyObjectProtocol for PyPcSaftParameters {
+    fn __repr__(&self) -> PyResult<String> {
+        Ok(self.0.to_string())
+    }
+}

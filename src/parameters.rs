@@ -1,9 +1,11 @@
 use feos_core::joback::JobackRecord;
 use feos_core::parameter::{FromSegments, FromSegmentsBinary, Parameter, PureRecord};
 use ndarray::{Array, Array1, Array2};
+use num_traits::Zero;
 use quantity::si::{JOULE, KB, KELVIN};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::fmt::Write;
 
 /// PcSaft parameter set.
 #[derive(Serialize, Deserialize, Clone, Default)]
@@ -392,6 +394,77 @@ impl Parameter for PcSaftParameters {
         &Array2<PcSaftBinaryRecord>,
     ) {
         (&self.pure_records, &self.binary_records)
+    }
+}
+
+impl PcSaftParameters {
+    pub fn to_markdown(&self) -> String {
+        let mut output = String::new();
+        let o = &mut output;
+        write!(
+            o,
+            "|component|molarweight|$m$|$\\sigma$|$\\varepsilon$|$\\mu$|$Q$|$\\kappa_{{AB}}$|$\\varepsilon_{{AB}}$|$N_A$|$N_B$|\n|-|-|-|-|-|-|-|-|-|-|-|"
+        )
+        .unwrap();
+        for i in 0..self.m.len() {
+            let component = self.pure_records[i].identifier.name.clone();
+            let component = component.unwrap_or(format!("Component {}", i + 1));
+            write!(
+                o,
+                "\n|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|",
+                component,
+                self.molarweight[i],
+                self.m[i],
+                self.sigma[i],
+                self.epsilon_k[i],
+                self.mu[i],
+                self.q[i],
+                self.kappa_ab[i],
+                self.epsilon_k_ab[i],
+                self.na[i],
+                self.nb[i]
+            )
+            .unwrap();
+        }
+
+        write!(o, "\n\n|$k_{{ij}}$|").unwrap();
+        (1..=self.m.len()).for_each(|i| write!(o, "{}|", i).unwrap());
+        write!(o, "\n|-|").unwrap();
+        (1..=self.m.len()).for_each(|_| write!(o, "-|").unwrap());
+        for (i, row) in self.k_ij.outer_iter().enumerate() {
+            write!(o, "\n|{}|", i + 1).unwrap();
+            for k in row {
+                write!(o, "{}|", k).unwrap();
+            }
+        }
+
+        output
+    }
+}
+
+impl std::fmt::Display for PcSaftParameters {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "PcSaftParameters(")?;
+        write!(f, "\n\tmolarweight={}", self.molarweight)?;
+        write!(f, "\n\tm={}", self.m)?;
+        write!(f, "\n\tsigma={}", self.sigma)?;
+        write!(f, "\n\tepsilon_k={}", self.epsilon_k)?;
+        if !self.dipole_comp.is_empty() {
+            write!(f, "\n\tmu={}", self.mu)?;
+        }
+        if !self.quadpole_comp.is_empty() {
+            write!(f, "\n\tq={}", self.q)?;
+        }
+        if !self.assoc_comp.is_empty() {
+            write!(f, "\n\tkappa_ab={}", self.kappa_ab)?;
+            write!(f, "\n\tepsilon_k_ab={}", self.epsilon_k_ab)?;
+            write!(f, "\n\tna={}", self.na)?;
+            write!(f, "\n\tnb={}", self.nb)?;
+        }
+        if !self.k_ij.iter().all(|k| k.is_zero()) {
+            write!(f, "\n\tk_ij=\n{}", self.k_ij)?;
+        }
+        write!(f, "\n)")
     }
 }
 
