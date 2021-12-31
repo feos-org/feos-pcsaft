@@ -34,6 +34,7 @@ pub struct PcSaftOptions {
     pub max_eta: f64,
     pub max_iter_cross_assoc: usize,
     pub tol_cross_assoc: f64,
+    pub dq_variant: DQVariants,
 }
 
 impl Default for PcSaftOptions {
@@ -42,6 +43,7 @@ impl Default for PcSaftOptions {
             max_eta: 0.5,
             max_iter_cross_assoc: 50,
             tol_cross_assoc: 1e-10,
+            dq_variant: DQVariants::DQ35,
         }
     }
 }
@@ -82,7 +84,7 @@ impl PcSaft {
         if parameters.ndipole > 0 && parameters.nquadpole > 0 {
             contributions.push(Box::new(DipoleQuadrupole {
                 parameters: parameters.clone(),
-                variant: DQVariants::DQ35,
+                variant: options.dq_variant,
             }));
         };
         match parameters.nassoc {
