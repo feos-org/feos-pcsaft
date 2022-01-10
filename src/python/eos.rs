@@ -1,4 +1,5 @@
 use super::parameters::PyPcSaftParameters;
+use crate::eos::polar::DQVariants;
 use crate::eos::{PcSaft, PcSaftOptions};
 use feos_core::python::{PyContributions, PyVerbosity};
 use feos_core::utils::{
@@ -14,6 +15,16 @@ use quantity::si::*;
 use std::collections::HashMap;
 use std::rc::Rc;
 
+impl From<&str> for DQVariants {
+    fn from(str: &str) -> Self {
+        match str {
+            "dq35" => Self::DQ35,
+            "dq44" => Self::DQ44,
+            _ => panic!("dq_variant must be either \"dq35\" or \"dq44\""),
+        }
+    }
+}
+
 /// Initialize PC-SAFT equation of state.
 ///
 /// Parameters
@@ -26,6 +37,8 @@ use std::rc::Rc;
 ///     Maximum number of iterations for cross association. Defaults to 50.
 /// tol_cross_assoc : float
 ///     Tolerance for convergence of cross association. Defaults to 1e-10.
+/// dq_variant : {'dq35', 'dq44'}, optional
+///     Combination rule used in the dipole/quadrupole term. Defaults to 'dq35'
 ///
 /// Returns
 /// -------
@@ -33,9 +46,7 @@ use std::rc::Rc;
 ///     The PC-SAFT equation of state that can be used to compute thermodynamic
 ///     states.
 #[pyclass(name = "PcSaft", unsendable)]
-#[pyo3(
-    text_signature = "(parameters, max_eta, max_iter_cross_assoc, tol_cross_assoc, joback_parameters)"
-)]
+#[pyo3(text_signature = "(parameters, max_eta, max_iter_cross_assoc, tol_cross_assoc, dq_variant)")]
 #[derive(Clone)]
 pub struct PyPcSaft(pub Rc<PcSaft>);
 
@@ -45,18 +56,21 @@ impl PyPcSaft {
     #[args(
         max_eta = "0.5",
         max_iter_cross_assoc = "50",
-        tol_cross_assoc = "1e-10"
+        tol_cross_assoc = "1e-10",
+        dq_variant = "\"dq35\""
     )]
     fn new(
         parameters: PyPcSaftParameters,
         max_eta: f64,
         max_iter_cross_assoc: usize,
         tol_cross_assoc: f64,
+        dq_variant: &str,
     ) -> Self {
         let options = PcSaftOptions {
             max_eta,
             max_iter_cross_assoc,
             tol_cross_assoc,
+            dq_variant: dq_variant.into(),
         };
         Self(Rc::new(PcSaft::with_options(parameters.0, options)))
     }
