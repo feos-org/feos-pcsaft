@@ -246,23 +246,19 @@ impl Parameter for PcSaftParameters {
 
         for (i, record) in pure_records.iter().enumerate() {
             component_index.insert(record.identifier.clone(), i);
-            match &record.model_record {
-                Some(r) => {
-                    m[i] = r.m;
-                    sigma[i] = r.sigma;
-                    epsilon_k[i] = r.epsilon_k;
-                    mu[i] = r.mu.unwrap_or(0.0);
-                    q[i] = r.q.unwrap_or(0.0);
-                    na[i] = r.na.unwrap_or(1.0);
-                    nb[i] = r.nb.unwrap_or(1.0);
-                    kappa_ab[i] = r.kappa_ab.unwrap_or(0.0);
-                    epsilon_k_ab[i] = r.epsilon_k_ab.unwrap_or(0.0);
-                    viscosity.push(r.viscosity);
-                    diffusion.push(r.diffusion);
-                    thermal_conductivity.push(r.thermal_conductivity);
-                }
-                None => panic!("No PcSaft parameters for {} found.", record.identifier.cas),
-            };
+            let r = &record.model_record;
+            m[i] = r.m;
+            sigma[i] = r.sigma;
+            epsilon_k[i] = r.epsilon_k;
+            mu[i] = r.mu.unwrap_or(0.0);
+            q[i] = r.q.unwrap_or(0.0);
+            na[i] = r.na.unwrap_or(1.0);
+            nb[i] = r.nb.unwrap_or(1.0);
+            kappa_ab[i] = r.kappa_ab.unwrap_or(0.0);
+            epsilon_k_ab[i] = r.epsilon_k_ab.unwrap_or(0.0);
+            viscosity.push(r.viscosity);
+            diffusion.push(r.diffusion);
+            thermal_conductivity.push(r.thermal_conductivity);
             molarweight[i] = record.molarweight;
         }
 
