@@ -12,7 +12,7 @@ use std::rc::Rc;
 
 fn propane_parameters() -> Result<Rc<PcSaftParameters>, ParameterError> {
     Ok(Rc::new(PcSaftParameters::from_json(
-        &["propane"],
+        vec!["propane"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,

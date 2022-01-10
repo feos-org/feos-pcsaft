@@ -9,7 +9,7 @@ use std::rc::Rc;
 #[test]
 fn test_stability_analysis() -> Result<(), Box<dyn Error>> {
     let params = PcSaftParameters::from_json(
-        &["water_np", "hexane"],
+        vec!["water_np", "hexane"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
@@ -26,7 +26,7 @@ fn test_stability_analysis() -> Result<(), Box<dyn Error>> {
     assert!(check.len() > 0);
 
     let params = PcSaftParameters::from_json(
-        &["propane", "butane"],
+        vec!["propane", "butane"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,

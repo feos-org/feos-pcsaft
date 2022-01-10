@@ -2,12 +2,12 @@ use crate::eos::association::{
     assoc_site_frac_a, assoc_site_frac_ab, helmholtz_energy_density_cross_association,
 };
 use crate::parameters::PcSaftParameters;
+use feos_core::EosError;
 use feos_dft::{
     FunctionalContributionDual, WeightFunction, WeightFunctionInfo, WeightFunctionShape,
 };
-use feos_core::EosError;
 use ndarray::*;
-use num_dual::{DualNum, SolveDual};
+use num_dual::DualNum;
 use std::f64::consts::PI;
 use std::fmt;
 use std::rc::Rc;
@@ -34,7 +34,6 @@ impl AssociationFunctional {
 impl<N> FunctionalContributionDual<N> for AssociationFunctional
 where
     N: DualNum<f64> + ScalarOperand,
-    Array2<N>: SolveDual<N>,
 {
     fn weight_functions(&self, temperature: N) -> WeightFunctionInfo<N> {
         let p = &self.parameters;

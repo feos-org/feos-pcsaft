@@ -10,7 +10,7 @@ use std::rc::Rc;
 #[test]
 fn test_critical_point_pure() -> Result<(), Box<dyn Error>> {
     let params = PcSaftParameters::from_json(
-        &["propane"],
+        vec!["propane"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
@@ -30,7 +30,7 @@ fn test_critical_point_pure() -> Result<(), Box<dyn Error>> {
 #[test]
 fn test_critical_point_mix() -> Result<(), Box<dyn Error>> {
     let params = PcSaftParameters::from_json(
-        &["propane", "butane"],
+        vec!["propane", "butane"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,

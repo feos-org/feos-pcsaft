@@ -10,7 +10,7 @@ use std::rc::Rc;
 #[test]
 fn test_dln_phi_dp() -> Result<(), Box<dyn Error>> {
     let params = PcSaftParameters::from_json(
-        &["propane", "butane"],
+        vec!["propane", "butane"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
@@ -43,7 +43,7 @@ fn test_dln_phi_dp() -> Result<(), Box<dyn Error>> {
 #[test]
 fn test_virial_is_not_nan() -> Result<(), Box<dyn Error>> {
     let params = PcSaftParameters::from_json(
-        &["water_np"],
+        vec!["water_np"],
         "tests/test_parameters.json",
         None,
         IdentifierOption::Name,
