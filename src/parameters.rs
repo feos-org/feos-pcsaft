@@ -423,17 +423,6 @@ impl PcSaftParameters {
             .unwrap();
         }
 
-        write!(o, "\n\n|$k_{{ij}}$|").unwrap();
-        (1..=self.m.len()).for_each(|i| write!(o, "{}|", i).unwrap());
-        write!(o, "\n|-|").unwrap();
-        (1..=self.m.len()).for_each(|_| write!(o, "-|").unwrap());
-        for (i, row) in self.k_ij.outer_iter().enumerate() {
-            write!(o, "\n|{}|", i + 1).unwrap();
-            for k in row {
-                write!(o, "{}|", k).unwrap();
-            }
-        }
-
         output
     }
 }
