@@ -6,7 +6,7 @@ use feos_core::parameter::{
 use feos_core::python::joback::PyJobackRecord;
 use feos_core::python::parameter::{PyBinarySegmentRecord, PyChemicalRecord, PyIdentifier};
 use feos_core::*;
-use numpy::PyArray2;
+use numpy::{PyArray2, ToPyArray};
 use pyo3::prelude::*;
 use std::convert::TryFrom;
 use std::rc::Rc;
@@ -50,6 +50,66 @@ impl PyPcSaftRecord {
             diffusion,
             thermal_conductivity,
         ))
+    }
+
+    #[getter]
+    fn get_m(&self) -> f64 {
+        self.0.m
+    }
+
+    #[getter]
+    fn get_sigma(&self) -> f64 {
+        self.0.sigma
+    }
+
+    #[getter]
+    fn get_epsilon_k(&self) -> f64 {
+        self.0.epsilon_k
+    }
+
+    #[getter]
+    fn get_mu(&self) -> Option<f64> {
+        self.0.mu
+    }
+
+    #[getter]
+    fn get_q(&self) -> Option<f64> {
+        self.0.q
+    }
+
+    #[getter]
+    fn get_kappa_ab(&self) -> Option<f64> {
+        self.0.kappa_ab
+    }
+
+    #[getter]
+    fn get_epsilon_k_ab(&self) -> Option<f64> {
+        self.0.epsilon_k_ab
+    }
+
+    #[getter]
+    fn get_na(&self) -> Option<f64> {
+        self.0.na
+    }
+
+    #[getter]
+    fn get_nb(&self) -> Option<f64> {
+        self.0.nb
+    }
+
+    #[getter]
+    fn get_viscosity(&self) -> Option<[f64; 4]> {
+        self.0.viscosity
+    }
+
+    #[getter]
+    fn get_diffusion(&self) -> Option<[f64; 5]> {
+        self.0.diffusion
+    }
+
+    #[getter]
+    fn get_thermal_conductivity(&self) -> Option<[f64; 4]> {
+        self.0.thermal_conductivity
     }
 }
 
@@ -95,6 +155,20 @@ impl_parameter_from_segments!(PcSaftParameters, PyPcSaftParameters);
 
 #[pymethods]
 impl PyPcSaftParameters {
+    #[getter]
+    fn get_pure_records(&self) -> Vec<PyPureRecord> {
+        self.0
+            .pure_records
+            .iter()
+            .map(|r| PyPureRecord(r.clone()))
+            .collect()
+    }
+
+    #[getter]
+    fn get_k_ij<'py>(&self, py: Python<'py>) -> &'py PyArray2<f64> {
+        self.0.k_ij.view().to_pyarray(py)
+    }
+
     fn _repr_markdown_(&self) -> String {
         self.0.to_markdown()
     }
