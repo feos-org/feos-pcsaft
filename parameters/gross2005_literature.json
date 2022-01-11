@@ -1,0 +1,17 @@
+[
+    {
+        "identifier": {
+            "cas": "74-85-1",
+            "name": "ethylene",
+            "iupac_name": "ethene",
+            "smiles": "C=C",
+            "inchi": "InChI=1/C2H4/c1-2/h1-2H2",
+            "formula": "C2H4"
+        },
+        "molarweight": 28.05,
+        "segments": [
+            "=CH2",
+            "=CH2"
+        ]
+    }
+]
