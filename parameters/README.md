@@ -23,6 +23,7 @@ The files named according to the pattern `NameYear.json` correspond to published
 `gross2005_fit.json` | quadrupolar substances, quadrupole adjusted in regression | [&#128279;](https://doi.org/10.1002/aic.10502)
 `gross2005_literature.json` | quadrupolar substances, quadrupole moment taken from literature | [&#128279;](https://doi.org/10.1002/aic.10502)
 `gross2006.json` | dipolar substances | [&#128279;](https://doi.org/10.1002/aic.10683)
+`rehner2020.json` | water and alcohols, with surface tension data included in the regression | [&#128279;](https://doi.org/10.1021/acs.jced.0c00684)
 
 ## Group-Contribution Parameters
 
