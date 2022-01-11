@@ -1,0 +1,13 @@
+[package]
+name = "feos_pcsaft"
+version = "0.1.0"
+authors = ["Gernot Bauer <bauer@itt.uni-stuttgart.de>",
+           "Philipp Rehner <prehner@ethz.ch"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+feos-pcsaft = { path = "..", features = ["python"] }
+pyo3 = { version = "0.15", features = ["extension-module", "abi3", "abi3-py37"] }

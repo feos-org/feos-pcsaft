@@ -3,10 +3,14 @@ name = "feos-pcsaft"
 version = "0.1.0"
 authors = ["Gernot Bauer <bauer@itt.uni-stuttgart.de>", "Philipp Rehner <prehner@ethz.ch>"]
 edition = "2018"
-
-[lib]
-name = "feos_pcsaft"
-crate-type = ["rlib", "cdylib"]
+license = "MIT OR Apache-2.0"
+description = "Implementation of PC-SAFT EoS and corresponding Helmholtz energy functional."
+homepage = "https://github.com/feos-org"
+readme = "README.md"
+repository = "https://github.com/feos-org/feos-pcsaft"
+keywords = ["physics", "thermodynamics", "equations_of_state", "phase_equilibria", "SAFT"]
+categories = ["science"]
+exclude = ["/.github/*", "*.ipynb"]
 
 [dependencies]
 quantity = "0.4"
@@ -22,14 +26,10 @@ indexmap = "1.3.2"
 lazy_static = "1.4.0"
 thiserror = "1.0"
 numpy = { version = "0.15", optional = true }
+pyo3 = { version = "0.15", optional = true }
 
 [dev-dependencies]
 approx = "0.4"
-
-[dependencies.pyo3]
-version = "0.15"
-features = ["extension-module", "abi3", "abi3-py36"]
-optional = true
 
 [features]
 default = []
