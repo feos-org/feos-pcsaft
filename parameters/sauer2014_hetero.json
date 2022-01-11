@@ -1,7 +1,7 @@
 [
   {
     "identifier": "CH3",
-    "saft_record": {
+    "model_record": {
       "m": 0.77247,
       "sigma": 3.6937,
       "epsilon_k": 181.49
@@ -10,17 +10,17 @@
   },
   {
     "identifier": "CH2",
-    "saft_record": {
+    "model_record": {
       "m": 0.7912,
       "sigma": 3.0207,
       "epsilon_k": 157.23
     },
     "molarweight": 14.02658
   },
-  
+
   {
     "identifier": ">CH",
-    "saft_record": {
+    "model_record": {
       "m": 0.52235,
       "sigma": 0.99912,
       "epsilon_k": 269.84
@@ -29,7 +29,7 @@
   },
   {
     "identifier": ">C<",
-    "saft_record": {
+    "model_record": {
       "m": -0.70131,
       "sigma": 0.54350,
       "epsilon_k": 0.0
@@ -38,7 +38,7 @@
   },
   {
     "identifier": "=CH2",
-    "saft_record": {
+    "model_record": {
       "m": 0.70581,
       "sigma": 3.1630,
       "epsilon_k": 171.34
@@ -47,7 +47,7 @@
   },
   {
     "identifier": "=CH",
-    "saft_record": {
+    "model_record": {
       "m": 0.90182,
       "sigma": 2.8864,
       "epsilon_k": 158.90
@@ -56,7 +56,7 @@
   },
   {
     "identifier": "=C<",
-    "saft_record": {
+    "model_record": {
       "m":  0.98505,
       "sigma": 2.2450,
       "epsilon_k": 146.86
@@ -65,7 +65,7 @@
   },
   {
     "identifier": "C≡CH",
-    "saft_record": { 
+    "model_record": {
       "m":  1.1615,
       "sigma": 3.3187,
       "epsilon_k": 255.13
@@ -74,7 +74,7 @@
   },
   {
     "identifier": "CH2_hex",
-    "saft_record": {  
+    "model_record": {
       "m":  0.87930,
       "sigma": 2.9995,
       "epsilon_k": 157.93
@@ -83,7 +83,7 @@
   },
   {
     "identifier": "CH_hex",
-    "saft_record": {   
+    "model_record": {
       "m":  0.42115,
       "sigma": 1.3078,
       "epsilon_k": 131.79
@@ -92,7 +92,7 @@
   },
   {
     "identifier": "CH2_pent",
-    "saft_record": { 
+    "model_record": {
        "m":  0.90057,
       "sigma": 3.0437,
       "epsilon_k": 158.34
@@ -101,7 +101,7 @@
   },
   {
     "identifier": "CH_pent",
-    "saft_record": {  
+    "model_record": {
       "m":  0.69343,
       "sigma": 1.2894,
       "epsilon_k": 140.69
@@ -110,7 +110,7 @@
   },
   {
     "identifier": "CH_arom",
-    "saft_record": {   
+    "model_record": {
       "m":  0.88259,
       "sigma": 2.9475,
       "epsilon_k": 156.51
@@ -119,7 +119,7 @@
   },
   {
     "identifier": "C_arom",
-    "saft_record": { 
+    "model_record": {
        "m": 0.77531,
       "sigma": 1.6719,
       "epsilon_k": 178.81
@@ -128,7 +128,7 @@
   },
   {
     "identifier": "CH=O",
-    "saft_record": {  
+    "model_record": {
       "m": 1.1889,
       "sigma": 3.2948,
       "epsilon_k": 316.91,
@@ -138,7 +138,7 @@
   },
   {
     "identifier": ">C=O",
-    "saft_record": {  
+    "model_record": {
       "m": 1.1889,
       "sigma": 3.1026,
       "epsilon_k": 280.43,
@@ -148,7 +148,7 @@
   },
   {
     "identifier": "OCH3",
-    "saft_record": {   
+    "model_record": {
       "m": 1.1907,
       "sigma": 2.7795,
       "epsilon_k": 284.91,
@@ -158,7 +158,7 @@
   },
   {
     "identifier": "OCH2",
-    "saft_record": { 
+    "model_record": {
       "m": 1.1817,
       "sigma": 3.0090,
       "epsilon_k": 203.11,
@@ -168,7 +168,7 @@
   },
   {
     "identifier": "HCOO",
-    "saft_record": {  
+    "model_record": {
       "m": 1.2789,
       "sigma": 3.3730,
       "epsilon_k": 307.44,
@@ -178,7 +178,7 @@
   },
   {
     "identifier": "COO",
-    "saft_record": {   
+    "model_record": {
       "m": 1.2869,
       "sigma": 3.0643,
       "epsilon_k": 273.90,
@@ -188,7 +188,7 @@
   },
   {
     "identifier": "OH",
-    "saft_record": {
+    "model_record": {
       "m": 1.0231,
       "sigma": 2.7702,
       "epsilon_k": 334.29,
@@ -199,7 +199,7 @@
   },
   {
     "identifier": "NH2",
-    "saft_record": {
+    "model_record": {
       "m": 0.82284,
       "sigma": 3.1129,
       "epsilon_k": 309.93,
@@ -210,7 +210,7 @@
   },
   {
     "identifier": "H2O",
-    "saft_record": {
+    "model_record": {
       "m": 1.0,
       "sigma": 3.0084,
       "epsilon_k": 165.53,
