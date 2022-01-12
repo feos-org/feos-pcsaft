@@ -18,12 +18,7 @@ You can learn more about the principles behind `FeOs` [here](https://feos-org.gi
 
 
 ## Parameters
-[parameters](parameters/README.md)
-
-[^gross2001]: [J. Gross and G. Sadowski (2001). *Industrial & Engineering Chemistry Research*, 40(4), 1244-1260.](https://doi.org/10.1021/ie0003887)
-[^gross2005]: [J. Gross (2005). *AIChE Journal*, 51(9), 2556-2568.](https://doi.org/10.1002/aic.10502)
-[^gross2006]: [J. Gross and J. Vrabec (2006). *AIChE Journal*, 52(3), 1194-1204.](https://doi.org/10.1002/aic.10683)
-[^sauer2016]: [E. Sauer and J. Gross (2017). *Industrial & Engineering Chemistry Research*, 56(14), 4119-4135](https://doi.org/10.1021/acs.iecr.6b04551)
+In addition to the source code for the Rust and Python packages, this repository contains JSON files with previously published [parameters](parameters) for the PC(P)-SAFT equation of state and corresponding group contribution methods. The parameter files can be read directly from Rust or Python.
 
 ## Installation
 
@@ -41,3 +36,8 @@ From within a Python virtual environment with `maturin` installed, type
 ```
 maturin build --release --out dist --no-sdist -m build_wheel/Cargo.toml
 ```
+
+[^gross2001]: [J. Gross and G. Sadowski (2001). *Industrial & Engineering Chemistry Research*, 40(4), 1244-1260.](https://doi.org/10.1021/ie0003887)
+[^gross2005]: [J. Gross (2005). *AIChE Journal*, 51(9), 2556-2568.](https://doi.org/10.1002/aic.10502)
+[^gross2006]: [J. Gross and J. Vrabec (2006). *AIChE Journal*, 52(3), 1194-1204.](https://doi.org/10.1002/aic.10683)
+[^sauer2016]: [E. Sauer and J. Gross (2017). *Industrial & Engineering Chemistry Research*, 56(14), 4119-4135](https://doi.org/10.1021/acs.iecr.6b04551)
