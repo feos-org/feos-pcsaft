@@ -17,7 +17,6 @@
     },
     "molarweight": 14.02658
   },
-
   {
     "identifier": ">CH",
     "model_record": {
@@ -57,7 +56,7 @@
   {
     "identifier": "=C<",
     "model_record": {
-      "m":  0.98505,
+      "m": 0.98505,
       "sigma": 2.2450,
       "epsilon_k": 146.86
     },
@@ -66,7 +65,7 @@
   {
     "identifier": "C≡CH",
     "model_record": {
-      "m":  1.1615,
+      "m": 1.1615,
       "sigma": 3.3187,
       "epsilon_k": 255.13
     },
@@ -75,7 +74,7 @@
   {
     "identifier": "CH2_hex",
     "model_record": {
-      "m":  0.87930,
+      "m": 0.87930,
       "sigma": 2.9995,
       "epsilon_k": 157.93
     },
@@ -84,7 +83,7 @@
   {
     "identifier": "CH_hex",
     "model_record": {
-      "m":  0.42115,
+      "m": 0.42115,
       "sigma": 1.3078,
       "epsilon_k": 131.79
     },
@@ -93,7 +92,7 @@
   {
     "identifier": "CH2_pent",
     "model_record": {
-       "m":  0.90057,
+      "m": 0.90057,
       "sigma": 3.0437,
       "epsilon_k": 158.34
     },
@@ -102,7 +101,7 @@
   {
     "identifier": "CH_pent",
     "model_record": {
-      "m":  0.69343,
+      "m": 0.69343,
       "sigma": 1.2894,
       "epsilon_k": 140.69
     },
@@ -111,7 +110,7 @@
   {
     "identifier": "CH_arom",
     "model_record": {
-      "m":  0.88259,
+      "m": 0.88259,
       "sigma": 2.9475,
       "epsilon_k": 156.51
     },
@@ -120,7 +119,7 @@
   {
     "identifier": "C_arom",
     "model_record": {
-       "m": 0.77531,
+      "m": 0.77531,
       "sigma": 1.6719,
       "epsilon_k": 178.81
     },
@@ -204,20 +203,8 @@
       "sigma": 3.1129,
       "epsilon_k": 309.93,
       "epsilon_k_ab": 1471.5,
-      "kappa_ab":  0.005769
+      "kappa_ab": 0.005769
     },
     "molarweight": 16.02238
-  },
-  {
-    "identifier": "H2O",
-    "model_record": {
-      "m": 1.0,
-      "sigma": 3.0084,
-      "epsilon_k": 165.53,
-      "mu": 1.6341,
-      "epsilon_k_ab": 2660.9,
-      "kappa_ab":  0.094273
-    },
-    "molarweight": 18.01528
   }
 ]
