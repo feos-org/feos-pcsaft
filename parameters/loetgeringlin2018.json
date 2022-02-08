@@ -391,32 +391,6 @@
     },
     {
         "identifier": {
-            "cas": "75-68-3",
-            "name": "1-chloro-1,1-difluoroethane [r142b]",
-            "iupac_name": "1-chloro-1,1-difluoroethane",
-            "smiles": "CC(F)(F)Cl",
-            "inchi": "InChI=1S/C2H3ClF2/c1-2(3,4)5/h1H3",
-            "formula": "C2H3ClF2"
-        },
-        "molarweight": 100.495,
-        "model_record": {
-            "m": 2.4533,
-            "sigma": 3.4805,
-            "epsilon_k": 202.0841,
-            "mu": 2.1405,
-            "q": 0.0,
-            "kappa_ab": 0.0,
-            "epsilon_k_ab": 0.0,
-            "viscosity": [
-                -0.993,
-                0.11,
-                7.0428,
-                -0.0991
-            ]
-        }
-    },
-    {
-        "identifier": {
             "cas": "111-96-6",
             "name": "diethylene glycol dimethyl ether",
             "iupac_name": "1-methoxy-2-(2-methoxyethoxy)ethane",
