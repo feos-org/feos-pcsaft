@@ -27,32 +27,6 @@
     },
     {
         "identifier": {
-            "cas": "354-33-6",
-            "name": "pentafluoroethane [r125]",
-            "iupac_name": "1,1,1,2,2-pentafluoroethane",
-            "smiles": "C(C(F)(F)F)(F)F",
-            "inchi": "InChI=1S/C2HF5/c3-1(4)2(5,6)7/h1H",
-            "formula": "C2HF5"
-        },
-        "molarweight": 120.022,
-        "model_record": {
-            "m": 3.0838,
-            "sigma": 3.1297,
-            "epsilon_k": 154.4771,
-            "mu": 1.5409,
-            "q": 0.0,
-            "kappa_ab": 0.0,
-            "epsilon_k_ab": 0.0,
-            "viscosity": [
-                -0.9671,
-                -2.5578,
-                -0.6434,
-                -0.1163
-            ]
-        }
-    },
-    {
-        "identifier": {
             "cas": "431-89-0",
             "name": "1,1,1,2,3,3,3-heptafluoropropane [r227ea]",
             "iupac_name": "1,1,1,2,3,3,3-heptafluoropropane",
@@ -74,32 +48,6 @@
                 -3.0118,
                 -0.554,
                 -0.1543
-            ]
-        }
-    },
-    {
-        "identifier": {
-            "cas": "431-89-0",
-            "name": "1,1,1,2,3,3,3-heptafluoropropane [r227ea]",
-            "iupac_name": "1,1,1,2,3,3,3-heptafluoropropane",
-            "smiles": "C(C(F)(F)F)(C(F)(F)F)F",
-            "inchi": "InChI=1S/C3HF7/c4-1(2(5,6)7)3(8,9)10/h1H",
-            "formula": "C3HF7"
-        },
-        "molarweight": 170.03,
-        "model_record": {
-            "m": 3.5407,
-            "sigma": 3.301,
-            "epsilon_k": 160.9843,
-            "mu": 1.9396,
-            "q": 0.0,
-            "kappa_ab": 0.0,
-            "epsilon_k_ab": 0.0,
-            "viscosity": [
-                -1.0079,
-                -2.2718,
-                -0.4248,
-                -0.0868
             ]
         }
     },
@@ -152,32 +100,6 @@
                 -2.6782,
                 -0.4505,
                 -0.1004
-            ]
-        }
-    },
-    {
-        "identifier": {
-            "cas": "811-97-2",
-            "name": "1,1,1,2-tetrafluoroethane [r134a]",
-            "iupac_name": "1,1,1,2-tetrafluoroethane",
-            "smiles": "C(C(F)(F)F)F",
-            "inchi": "InChI=1S/C2H2F4/c3-1-2(4,5)6/h1H2",
-            "formula": "C2H2F4"
-        },
-        "molarweight": 102.031,
-        "model_record": {
-            "m": 3.1242,
-            "sigma": 3.0549,
-            "epsilon_k": 165.8855,
-            "mu": 2.0581,
-            "q": 0.0,
-            "kappa_ab": 0.0,
-            "epsilon_k_ab": 0.0,
-            "viscosity": [
-                -0.9757,
-                -2.4426,
-                -0.5724,
-                -0.1025
             ]
         }
     },
@@ -282,32 +204,6 @@
                 -2.2024,
                 -0.3203,
                 -0.0846
-            ]
-        }
-    },
-    {
-        "identifier": {
-            "cas": "420-46-2",
-            "name": "1,1,1-trifluoroethane [r143a]",
-            "iupac_name": "1,1,1-trifluoroethane",
-            "smiles": "CC(F)(F)F",
-            "inchi": "InChI=1S/C2H3F3/c1-2(3,4)5/h1H3",
-            "formula": "C2H3F3"
-        },
-        "molarweight": 84.041,
-        "model_record": {
-            "m": 2.4877,
-            "sigma": 3.2839,
-            "epsilon_k": 161.4797,
-            "mu": 2.3204,
-            "q": 0.0,
-            "kappa_ab": 0.0,
-            "epsilon_k_ab": 0.0,
-            "viscosity": [
-                -0.853,
-                -1.457,
-                0.3634,
-                -0.0881
             ]
         }
     },
@@ -490,32 +386,6 @@
                 -2.7197,
                 -0.5569,
                 -0.1427
-            ]
-        }
-    },
-    {
-        "identifier": {
-            "cas": "76-15-3",
-            "name": "chloroperfluoroethane [r115]",
-            "iupac_name": "1-chloro-1,1,2,2,2-pentafluoroethane",
-            "smiles": "C(C(F)(F)Cl)(F)(F)F",
-            "inchi": "InChI=1S/C2ClF5/c3-1(4,5)2(6,7)8",
-            "formula": "C2ClF5"
-        },
-        "molarweight": 154.467,
-        "model_record": {
-            "m": 2.7628,
-            "sigma": 3.5063,
-            "epsilon_k": 170.7613,
-            "mu": 0.5186,
-            "q": 0.0,
-            "kappa_ab": 0.0,
-            "epsilon_k_ab": 0.0,
-            "viscosity": [
-                -0.9935,
-                -2.5208,
-                -0.6068,
-                -0.1295
             ]
         }
     },
