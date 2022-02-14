@@ -2,8 +2,9 @@ use crate::eos::PcSaftOptions;
 use crate::parameters::PcSaftParameters;
 use association::AssociationFunctional;
 use dispersion::AttractiveFunctional;
+use feos_core::joback::Joback;
 use feos_core::parameter::Parameter;
-use feos_core::MolarWeight;
+use feos_core::{IdealGasContribution, MolarWeight};
 use feos_dft::adsorption::FluidParameters;
 use feos_dft::fundamental_measure_theory::{FMTContribution, FMTProperties, FMTVersion};
 use feos_dft::solvation::PairPotential;
@@ -28,6 +29,7 @@ pub struct PcSaftFunctional {
     fmt_version: FMTVersion,
     options: PcSaftOptions,
     contributions: Vec<Box<dyn FunctionalContribution>>,
+    joback: Joback,
 }
 
 impl PcSaftFunctional {
@@ -85,11 +87,17 @@ impl PcSaftFunctional {
             }
         }
 
+        let joback = match &parameters.joback_records {
+            Some(joback_records) => Joback::new(joback_records.clone()),
+            None => Joback::default(parameters.m.len()),
+        };
+
         let func = Self {
             parameters: parameters.clone(),
             fmt_version,
             options: saft_options,
             contributions,
+            joback,
         };
 
         DFT::new_homosegmented(func, &parameters.m)
@@ -113,6 +121,10 @@ impl HelmholtzEnergyFunctional for PcSaftFunctional {
 
     fn contributions(&self) -> &[Box<dyn FunctionalContribution>] {
         &self.contributions
+    }
+
+    fn ideal_gas(&self) -> &dyn IdealGasContribution {
+        &self.joback
     }
 }
 
