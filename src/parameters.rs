@@ -63,26 +63,41 @@ impl FromSegments for PcSaftRecord {
             1 => Some(q[0]),
             _ => panic!("More than one segment with quadrupole moment."),
         };
-        let mu: Vec<f64> = segments.iter().filter_map(|s| s.0.mu).collect();
-        let mu = match mu.len() {
-            0 => None,
-            1 => Some(mu[0]),
-            _ => panic!("More than one segment with dipole moment."),
-        };
-        let kappa_ab: Vec<f64> = segments.iter().filter_map(|s| s.0.kappa_ab).collect();
-        let kappa_ab = match kappa_ab.len() {
-            0 => None,
-            1 => Some(kappa_ab[0]),
-            _ => panic!("More than one segment with association site."),
-        };
-        let epsilon_k_ab: Vec<f64> = segments.iter().filter_map(|s| s.0.epsilon_k_ab).collect();
-        let epsilon_k_ab = match epsilon_k_ab.len() {
-            0 => None,
-            1 => Some(epsilon_k_ab[0]),
-            _ => panic!("More than one segment with association site"),
-        };
-        let na = Some(1.0);
-        let nb = Some(1.0);
+        let mu = segments
+            .iter()
+            .filter_map(|(s, n)| s.mu.map(|mu| mu * *n))
+            .reduce(|a, b| a + b);
+        // let mu = match mu.len() {
+        //     0 => None,
+        //     1 => Some(mu[0]),
+        //     _ => panic!("More than one segment with dipole moment."),
+        // };
+        let kappa_ab = segments
+            .iter()
+            .filter_map(|(s, n)| s.kappa_ab.map(|k| k * *n))
+            .reduce(|a, b| a + b);
+        // let kappa_ab = match kappa_ab.len() {
+        //     0 => None,
+        //     1 => Some(kappa_ab[0]),
+        //     _ => panic!("More than one segment with association site."),
+        // };
+        let epsilon_k_ab = segments
+            .iter()
+            .filter_map(|(s, n)| s.epsilon_k_ab.map(|e| e * *n))
+            .reduce(|a, b| a + b);
+        // let epsilon_k_ab = match epsilon_k_ab.len() {
+        //     0 => None,
+        //     1 => Some(epsilon_k_ab[0]),
+        //     _ => panic!("More than one segment with association site"),
+        // };
+        let na = segments
+            .iter()
+            .filter_map(|(s, n)| s.na.map(|na| na * *n))
+            .reduce(|a, b| a + b);
+        let nb = segments
+            .iter()
+            .filter_map(|(s, n)| s.nb.map(|nb| nb * *n))
+            .reduce(|a, b| a + b);
         Self {
             m,
             sigma: (sigma3 / m).cbrt(),
