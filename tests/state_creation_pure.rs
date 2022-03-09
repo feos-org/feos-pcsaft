@@ -24,9 +24,11 @@ fn temperature_volume() -> Result<(), Box<dyn Error>> {
     let saft = Rc::new(PcSaft::new(propane_parameters()?));
     let temperature = 300.0 * KELVIN;
     let volume = 1.5e-3 * METER.powi(3);
+    let moles = MOL;
     let state = StateBuilder::new(&saft)
         .temperature(temperature)
         .volume(volume)
+        .total_moles(moles)
         .build()?;
     assert_relative_eq!(state.volume, volume, max_relative = 1e-10);
     Ok(())
@@ -137,15 +139,15 @@ fn pressure_temperature_initial_density() -> Result<(), Box<dyn Error>> {
 fn pressure_enthalpy_vapor() -> Result<(), Box<dyn Error>> {
     let saft = Rc::new(PcSaft::new(propane_parameters()?));
     let pressure = 0.3 * BAR;
-    let enthalpy = 2000.0 * JOULE / MOL;
+    let molar_enthalpy = 2000.0 * JOULE / MOL;
     let state = StateBuilder::new(&saft)
         .pressure(pressure)
-        .enthalpy(enthalpy)
+        .molar_enthalpy(molar_enthalpy)
         .vapor()
         .build()?;
     assert_relative_eq!(
         state.molar_enthalpy(Contributions::Total),
-        enthalpy,
+        molar_enthalpy,
         max_relative = 1e-10
     );
     assert_relative_eq!(
@@ -157,10 +159,11 @@ fn pressure_enthalpy_vapor() -> Result<(), Box<dyn Error>> {
     let state = StateBuilder::new(&saft)
         .volume(state.volume)
         .temperature(state.temperature)
+        .moles(&state.moles)
         .build()?;
     assert_relative_eq!(
         state.molar_enthalpy(Contributions::Total),
-        enthalpy,
+        molar_enthalpy,
         max_relative = 1e-10
     );
     assert_relative_eq!(
@@ -182,14 +185,14 @@ fn density_internal_energy() -> Result<(), Box<dyn Error>> {
         .temperature(temperature)
         .total_moles(total_moles)
         .build()?;
-    let internal_energy = state.molar_internal_energy(Contributions::Total);
+    let molar_internal_energy = state.molar_internal_energy(Contributions::Total);
     let state_nvu = StateBuilder::new(&saft)
         .volume(state.volume)
-        .internal_energy(internal_energy)
+        .molar_internal_energy(molar_internal_energy)
         .total_moles(total_moles)
         .build()?;
     assert_relative_eq!(
-        internal_energy,
+        molar_internal_energy,
         state_nvu.molar_internal_energy(Contributions::Total),
         max_relative = 1e-10
     );
@@ -202,17 +205,17 @@ fn density_internal_energy() -> Result<(), Box<dyn Error>> {
 fn pressure_enthalpy_total_moles_vapor() -> Result<(), Box<dyn Error>> {
     let saft = Rc::new(PcSaft::new(propane_parameters()?));
     let pressure = 0.3 * BAR;
-    let enthalpy = 2000.0 * JOULE / MOL;
+    let molar_enthalpy = 2000.0 * JOULE / MOL;
     let total_moles = 2.5 * MOL;
     let state = StateBuilder::new(&saft)
         .pressure(pressure)
-        .enthalpy(enthalpy)
+        .molar_enthalpy(molar_enthalpy)
         .total_moles(total_moles)
         .vapor()
         .build()?;
     assert_relative_eq!(
         state.molar_enthalpy(Contributions::Total),
-        enthalpy,
+        molar_enthalpy,
         max_relative = 1e-10
     );
     assert_relative_eq!(
@@ -228,7 +231,7 @@ fn pressure_enthalpy_total_moles_vapor() -> Result<(), Box<dyn Error>> {
         .build()?;
     assert_relative_eq!(
         state.molar_enthalpy(Contributions::Total),
-        enthalpy,
+        molar_enthalpy,
         max_relative = 1e-10
     );
     assert_relative_eq!(
@@ -243,15 +246,15 @@ fn pressure_enthalpy_total_moles_vapor() -> Result<(), Box<dyn Error>> {
 fn pressure_entropy_vapor() -> Result<(), Box<dyn Error>> {
     let saft = Rc::new(PcSaft::new(propane_parameters()?));
     let pressure = 0.3 * BAR;
-    let entropy = -2.0 * JOULE / MOL / KELVIN;
+    let molar_entropy = -2.0 * JOULE / MOL / KELVIN;
     let state = StateBuilder::new(&saft)
         .pressure(pressure)
-        .entropy(entropy)
+        .molar_entropy(molar_entropy)
         .vapor()
         .build()?;
     assert_relative_eq!(
         state.molar_entropy(Contributions::Total),
-        entropy,
+        molar_entropy,
         max_relative = 1e-10
     );
     assert_relative_eq!(
@@ -263,10 +266,11 @@ fn pressure_entropy_vapor() -> Result<(), Box<dyn Error>> {
     let state = StateBuilder::new(&saft)
         .volume(state.volume)
         .temperature(state.temperature)
+        .moles(&state.moles)
         .build()?;
     assert_relative_eq!(
         state.molar_entropy(Contributions::Total),
-        entropy,
+        molar_entropy,
         max_relative = 1e-10
     );
     assert_relative_eq!(
@@ -355,14 +359,13 @@ fn test_consistency() -> Result<(), Box<dyn Error>> {
             "temperature: {}\npressure: {}\ndensity: {}",
             temperature, pressure, state.density
         );
-        let enthalpy = state.molar_enthalpy(Contributions::Total);
-        let entropy = state.molar_entropy(Contributions::Total);
+        let molar_enthalpy = state.molar_enthalpy(Contributions::Total);
+        let molar_entropy = state.molar_entropy(Contributions::Total);
         let density = state.density;
-        let volume = state.volume;
 
         let state_tv = StateBuilder::new(&saft)
             .temperature(temperature)
-            .volume(volume)
+            .density(density)
             .build()?;
 
         let vle = PhaseEquilibrium::pure_t(&saft, temperature, None, Default::default());
@@ -380,27 +383,27 @@ fn test_consistency() -> Result<(), Box<dyn Error>> {
         let state_ts = builder
             .clone()
             .temperature(temperature)
-            .entropy(entropy)
+            .molar_entropy(molar_entropy)
             .build()?;
 
         let state_ps = builder
             .clone()
             .pressure(pressure)
-            .entropy(entropy)
+            .molar_entropy(molar_entropy)
             .build()?;
 
         dbg!("ph");
         let state_ph = builder
             .clone()
             .pressure(pressure)
-            .enthalpy(enthalpy)
+            .molar_enthalpy(molar_enthalpy)
             .build()?;
 
         dbg!("th");
         let state_th = builder
             .clone()
             .temperature(temperature)
-            .enthalpy(enthalpy)
+            .molar_enthalpy(molar_enthalpy)
             .build()?;
 
         dbg!("assertions");
@@ -413,8 +416,8 @@ fn test_consistency() -> Result<(), Box<dyn Error>> {
                 (&state_ps, "p, s"),
             ],
             pressure,
-            enthalpy,
-            entropy,
+            molar_enthalpy,
+            molar_entropy,
             density,
             1e-7,
         );
