@@ -305,7 +305,9 @@ fn test_entropy_bulk_values() -> Result<(), Box<dyn Error>> {
     let func = Rc::new(PcSaftFunctional::new(Rc::new(params)));
     let vle = PhaseEquilibrium::pure_t(&func, 350.0 * KELVIN, None, Default::default())?;
     let profile = PlanarInterface::from_pdgt(&vle, 2048)?.solve(None)?;
-    let s_res = profile.profile.entropy_density(Contributions::Residual)?;
+    let s_res = profile
+        .profile
+        .entropy_density(Contributions::ResidualNvt)?;
     let s_tot = profile.profile.entropy_density(Contributions::Total)?;
     println!(
         "Density:\n{}",
@@ -319,8 +321,8 @@ fn test_entropy_bulk_values() -> Result<(), Box<dyn Error>> {
     println!("\nResidual:\n{}", s_res);
     println!(
         "liquid: {}, vapor: {}",
-        profile.vle.liquid().entropy(Contributions::Residual) / profile.vle.liquid().volume,
-        profile.vle.vapor().entropy(Contributions::Residual) / profile.vle.vapor().volume
+        profile.vle.liquid().entropy(Contributions::ResidualNvt) / profile.vle.liquid().volume,
+        profile.vle.vapor().entropy(Contributions::ResidualNvt) / profile.vle.vapor().volume
     );
     println!("\nTotal:\n{}", s_tot);
     println!(
@@ -330,12 +332,12 @@ fn test_entropy_bulk_values() -> Result<(), Box<dyn Error>> {
     );
     assert_relative_eq!(
         s_res.get(0),
-        profile.vle.liquid().entropy(Contributions::Residual) / profile.vle.liquid().volume,
+        profile.vle.liquid().entropy(Contributions::ResidualNvt) / profile.vle.liquid().volume,
         max_relative = 1e-8,
     );
     assert_relative_eq!(
         s_res.get(2047),
-        profile.vle.vapor().entropy(Contributions::Residual) / profile.vle.vapor().volume,
+        profile.vle.vapor().entropy(Contributions::ResidualNvt) / profile.vle.vapor().volume,
         max_relative = 1e-8,
     );
     assert_relative_eq!(

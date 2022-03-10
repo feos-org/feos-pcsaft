@@ -14,8 +14,8 @@ exclude = ["/.github/*", "*.ipynb", "/examples/*", "/parameters/*"]
 
 [dependencies]
 quantity = "0.5"
-feos-core = { path = "../feos-core" }
-feos-dft = { path = "../feos-dft" }
+feos-core = { git = "https://github.com/feos-org/feos-core" }
+feos-dft = { git = "https://github.com/feos-org/feos-dft", branch = "v0.2.0" }
 num-dual = "0.5"
 num = "0.4"
 num-traits = "0.2"

@@ -338,7 +338,7 @@ impl EntropyScaling<SIUnit> for PcSaft {
                         * self
                             .diffusion_correlation(
                                 state
-                                    .molar_entropy(Contributions::Residual)
+                                    .molar_entropy(Contributions::ResidualNvt)
                                     .to_reduced(SIUnit::reference_molar_entropy())
                                     .unwrap(),
                                 &state.molefracs,
@@ -391,7 +391,7 @@ mod tests {
         let p_ig = s.total_moles * RGAS * t / v;
         assert_relative_eq!(s.pressure(Contributions::IdealGas), p_ig, epsilon = 1e-10);
         assert_relative_eq!(
-            s.pressure(Contributions::IdealGas) + s.pressure(Contributions::Residual),
+            s.pressure(Contributions::IdealGas) + s.pressure(Contributions::ResidualNvt),
             s.pressure(Contributions::Total),
             epsilon = 1e-10
         );
@@ -407,7 +407,7 @@ mod tests {
         let p_ig = s.total_moles * RGAS * t / v;
         assert_relative_eq!(s.pressure(Contributions::IdealGas), p_ig, epsilon = 1e-10);
         assert_relative_eq!(
-            s.pressure(Contributions::IdealGas) + s.pressure(Contributions::Residual),
+            s.pressure(Contributions::IdealGas) + s.pressure(Contributions::ResidualNvt),
             s.pressure(Contributions::Total),
             epsilon = 1e-10
         );
