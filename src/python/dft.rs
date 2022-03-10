@@ -1,6 +1,5 @@
 use super::parameters::*;
 use crate::dft::PcSaftFunctional;
-use feos_core::python::{PyContributions, PyVerbosity};
 use feos_core::utils::{
     DataSet, EquilibriumLiquidDensity, Estimator, LiquidDensity, VaporPressure,
 };

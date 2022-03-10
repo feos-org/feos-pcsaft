@@ -1,7 +1,6 @@
 use super::parameters::PyPcSaftParameters;
 use crate::eos::polar::DQVariants;
 use crate::eos::{PcSaft, PcSaftOptions};
-use feos_core::python::{PyContributions, PyVerbosity};
 use feos_core::utils::{
     DataSet, EquilibriumLiquidDensity, Estimator, LiquidDensity, VaporPressure,
 };

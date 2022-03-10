@@ -13,10 +13,10 @@ categories = ["science"]
 exclude = ["/.github/*", "*.ipynb", "/examples/*", "/parameters/*"]
 
 [dependencies]
-quantity = "0.4"
-feos-core = "0.1"
-feos-dft = "0.1"
-num-dual = "0.4"
+quantity = "0.5"
+feos-core = { path = "../feos-core" }
+feos-dft = { path = "../feos-dft" }
+num-dual = "0.5"
 num = "0.4"
 num-traits = "0.2"
 ndarray = { version = "0.15", features=["approx"] }
@@ -25,8 +25,8 @@ serde_json = "1.0"
 indexmap = "1.8"
 lazy_static = "1.4"
 thiserror = "1.0"
-numpy = { version = "0.15", optional = true }
-pyo3 = { version = "0.15", optional = true }
+numpy = { version = "0.16", optional = true }
+pyo3 = { version = "0.16", optional = true }
 
 [dev-dependencies]
 approx = "0.4"

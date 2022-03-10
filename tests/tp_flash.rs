@@ -1,6 +1,6 @@
 use approx::assert_relative_eq;
 use feos_core::parameter::{IdentifierOption, Parameter, ParameterError};
-use feos_core::{Contributions, PhaseEquilibrium, VLEOptions};
+use feos_core::{Contributions, PhaseEquilibrium, SolverOptions};
 use feos_pcsaft::{PcSaft, PcSaftParameters};
 use ndarray::*;
 use quantity::si::*;
@@ -33,7 +33,7 @@ fn test_tp_flash() -> Result<(), Box<dyn Error>> {
     let z1 = 0.5 * (x1 + y1);
     println!("{} {} {} {} {}", p_propane, p_butane, x1, y1, z1);
     let mix = Rc::new(PcSaft::new(read_params(vec!["propane", "butane"])?));
-    let options = VLEOptions::new().max_iter(100).tol(1e-12);
+    let options = SolverOptions::new().max_iter(100).tol(1e-12);
     let vle = PhaseEquilibrium::tp_flash(
         &mix,
         t,

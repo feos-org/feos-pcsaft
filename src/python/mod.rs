@@ -1,9 +1,9 @@
 use feos_core::python::joback::PyJobackRecord;
 use feos_core::python::parameter::*;
-use feos_core::python::*;
+use feos_core::{Contributions, Verbosity};
 use pyo3::prelude::*;
 use pyo3::wrap_pymodule;
-use quantity::python::PyInit_quantity;
+use quantity::python::__PYO3_PYMODULE_DEF_QUANTITY;
 
 mod eos;
 pub use eos::*;
@@ -15,8 +15,8 @@ use parameters::*;
 #[pymodule]
 pub fn feos_pcsaft(py: Python<'_>, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyIdentifier>()?;
-    m.add_class::<PyVerbosity>()?;
-    m.add_class::<PyContributions>()?;
+    m.add_class::<Verbosity>()?;
+    m.add_class::<Contributions>()?;
     m.add_class::<PyChemicalRecord>()?;
     m.add_class::<PyJobackRecord>()?;
 

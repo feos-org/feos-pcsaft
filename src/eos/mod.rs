@@ -161,24 +161,29 @@ fn omega22(t: f64) -> f64 {
         - 6.435e-4 * t.powf(0.14874) * (18.0323 * t.powf(-0.76830) - 7.27371).sin()
 }
 
-impl EntropyScaling<SIUnit, Self> for PcSaft {
-    fn viscosity_reference(&self, state: &State<SIUnit, Self>) -> EosResult<SINumber> {
+impl EntropyScaling<SIUnit> for PcSaft {
+    fn viscosity_reference(
+        &self,
+        temperature: SINumber,
+        _: SINumber,
+        moles: &SIArray1,
+    ) -> EosResult<SINumber> {
         let p = &self.parameters;
         let mw = &p.molarweight;
         let ce: Array1<SINumber> = (0..self.components())
             .map(|i| {
-                let tr = (state.temperature / p.epsilon_k[i] / KELVIN)
+                let tr = (temperature / p.epsilon_k[i] / KELVIN)
                     .into_value()
                     .unwrap();
                 5.0 / 16.0
-                    * (mw[i] * GRAM / MOL * KB / NAV * state.temperature / PI)
+                    * (mw[i] * GRAM / MOL * KB / NAV * temperature / PI)
                         .sqrt()
                         .unwrap()
                     / omega22(tr)
                     / (p.sigma[i] * ANGSTROM).powi(2)
             })
             .collect();
-        let x = &state.molefracs;
+        let x = moles.to_reduced(moles.sum())?;
         let mut ce_mix = 0.0 * MILLI * PASCAL * SECOND;
         for i in 0..self.components() {
             let denom: f64 = (0..self.components())
@@ -211,18 +216,24 @@ impl EntropyScaling<SIUnit, Self> for PcSaft {
         Ok(a + b * s + c * s.powi(2) + d * s.powi(3))
     }
 
-    fn diffusion_reference(&self, state: &State<SIUnit, Self>) -> EosResult<SINumber> {
+    fn diffusion_reference(
+        &self,
+        temperature: SINumber,
+        volume: SINumber,
+        moles: &SIArray1,
+    ) -> EosResult<SINumber> {
         if self.components() != 1 {
             return Err(EosError::IncompatibleComponents(self.components(), 1));
         }
         let p = &self.parameters;
+        let density = moles.sum() / volume;
         let res: Array1<SINumber> = (0..self.components())
             .map(|i| {
-                let tr = (state.temperature / p.epsilon_k[i] / KELVIN)
+                let tr = (temperature / p.epsilon_k[i] / KELVIN)
                     .into_value()
                     .unwrap();
-                3.0 / 8.0 / (p.sigma[i] * ANGSTROM).powi(2) / omega11(tr) / (state.density * NAV)
-                    * (state.temperature * RGAS / PI / (p.molarweight[i] * GRAM / MOL))
+                3.0 / 8.0 / (p.sigma[i] * ANGSTROM).powi(2) / omega11(tr) / (density * NAV)
+                    * (temperature * RGAS / PI / (p.molarweight[i] * GRAM / MOL))
                         .sqrt()
                         .unwrap()
             })
@@ -260,7 +271,7 @@ impl EntropyScaling<SIUnit, Self> for PcSaft {
     //     let p = &self.parameters;
     //     let res: Array1<SINumber> = (0..self.components())
     //         .map(|i| {
-    //             let tr = (state.temperature / p.epsilon_k[i] / KELVIN)
+    //             let tr = (temperature / p.epsilon_k[i] / KELVIN)
     //                 .into_value()
     //                 .unwrap();
     //             let cp = State::critical_point_pure(&state.eos, Some(state.temperature)).unwrap();
@@ -273,7 +284,7 @@ impl EntropyScaling<SIUnit, Self> for PcSaft {
     //                 .to_reduced(SIUnit::reference_entropy())
     //                 .unwrap();
     //             let ref_ce = 0.083235
-    //                 * ((state.temperature / KELVIN).into_value().unwrap()
+    //                 * ((temperature / KELVIN).into_value().unwrap()
     //                     / (p.molarweight[0]
     //                     / p.m[0]))
     //                     .sqrt()
@@ -292,26 +303,38 @@ impl EntropyScaling<SIUnit, Self> for PcSaft {
     // }
 
     // Equation 11 of DOI: 10.1021/acs.iecr.9b03998
-    fn thermal_conductivity_reference(&self, state: &State<SIUnit, Self>) -> EosResult<SINumber> {
+    fn thermal_conductivity_reference(
+        &self,
+        temperature: SINumber,
+        volume: SINumber,
+        moles: &SIArray1,
+    ) -> EosResult<SINumber> {
         if self.components() != 1 {
             return Err(EosError::IncompatibleComponents(self.components(), 1));
         }
         let p = &self.parameters;
+        let state = State::new_nvt(
+            &Rc::new(Self::new(self.parameters.clone())),
+            temperature,
+            volume,
+            moles,
+        )?;
         let res: Array1<SINumber> = (0..self.components())
             .map(|i| {
-                let tr = (state.temperature / p.epsilon_k[i] / KELVIN)
+                let tr = (temperature / p.epsilon_k[i] / KELVIN)
                     .into_value()
                     .unwrap();
                 let ce = 83.235
                     * f64::powf(10.0, -1.5)
-                    * ((state.temperature / KELVIN).into_value().unwrap() / p.molarweight[0]
-                        * p.m[0])
+                    * ((temperature / KELVIN).into_value().unwrap() / p.molarweight[0] * p.m[0])
                         .sqrt()
                     / (p.sigma[0] * p.sigma[0])
                     / omega22(tr);
                 ce * WATT / METER / KELVIN
                     + state.density
-                        * self.diffusion_reference(state).unwrap()
+                        * self
+                            .diffusion_reference(temperature, volume, moles)
+                            .unwrap()
                         * self
                             .diffusion_correlation(
                                 state
@@ -483,7 +506,7 @@ mod tests {
         );
         assert_relative_eq!(
             s.ln_viscosity_reduced()?,
-            (s.viscosity()? / e.viscosity_reference(&s)?)
+            (s.viscosity()? / e.viscosity_reference(s.temperature, s.volume, &s.moles)?)
                 .into_value()
                 .unwrap()
                 .ln(),
@@ -506,7 +529,7 @@ mod tests {
         );
         assert_relative_eq!(
             s.ln_diffusion_reduced()?,
-            (s.diffusion()? / e.diffusion_reference(&s)?)
+            (s.diffusion()? / e.diffusion_reference(s.temperature, s.volume, &s.moles)?)
                 .into_value()
                 .unwrap()
                 .ln(),
