@@ -208,7 +208,7 @@ impl EntropyScaling<SIUnit> for PcSaft {
             .expect("Missing viscosity coefficients.");
         let m = (x * &self.parameters.m).sum();
         let s = s_res / m;
-        let pref = (x * &self.parameters.m).mapv(|v| v / m);
+        let pref = (x * &self.parameters.m) / m;
         let a: f64 = (&coefficients.row(0) * x).sum();
         let b: f64 = (&coefficients.row(1) * &pref).sum();
         let c: f64 = (&coefficients.row(2) * &pref).sum();

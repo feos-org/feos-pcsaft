@@ -132,6 +132,8 @@ impl FromSegments for PcSaftRecord {
             //     p[3] += *n * d;
             // }
         });
+        // correction due to difference in Chapman-Enskog reference between GC and regular formulation.
+        viscosity = viscosity.map(|v| [v[0] - m.ln(), v[1], v[2], v[3]]);
 
         Self {
             m,
