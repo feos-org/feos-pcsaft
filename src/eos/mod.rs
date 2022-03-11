@@ -170,6 +170,7 @@ impl EntropyScaling<SIUnit> for PcSaft {
     ) -> EosResult<SINumber> {
         let p = &self.parameters;
         let mw = &p.molarweight;
+        let x = moles.to_reduced(moles.sum())?;
         let ce: Array1<SINumber> = (0..self.components())
             .map(|i| {
                 let tr = (temperature / p.epsilon_k[i] / KELVIN)
@@ -183,7 +184,6 @@ impl EntropyScaling<SIUnit> for PcSaft {
                     / (p.sigma[i] * ANGSTROM).powi(2)
             })
             .collect();
-        let x = moles.to_reduced(moles.sum())?;
         let mut ce_mix = 0.0 * MILLI * PASCAL * SECOND;
         for i in 0..self.components() {
             let denom: f64 = (0..self.components())
@@ -313,12 +313,7 @@ impl EntropyScaling<SIUnit> for PcSaft {
             return Err(EosError::IncompatibleComponents(self.components(), 1));
         }
         let p = &self.parameters;
-        let state = State::new_nvt(
-            &Rc::new(Self::new(self.parameters.clone())),
-            temperature,
-            volume,
-            moles,
-        )?;
+        let state = State::new_nvt(&Rc::new(Self::new(p.clone())), temperature, volume, moles)?;
         let res: Array1<SINumber> = (0..self.components())
             .map(|i| {
                 let tr = (temperature / p.epsilon_k[i] / KELVIN)

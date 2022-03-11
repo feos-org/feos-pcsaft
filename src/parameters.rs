@@ -81,6 +81,58 @@ impl FromSegments for PcSaftRecord {
             .filter_map(|(s, n)| s.nb.map(|nb| nb * *n))
             .reduce(|a, b| a + b);
 
+        // entropy scaling
+        let mut viscosity = if segments
+            .iter()
+            .all(|(record, _)| record.viscosity.is_some())
+        {
+            Some([0.0; 4])
+        } else {
+            None
+        };
+        let mut thermal_conductivity = if segments
+            .iter()
+            .all(|(record, _)| record.thermal_conductivity.is_some())
+        {
+            Some([0.0; 4])
+        } else {
+            None
+        };
+        let diffusion = if segments
+            .iter()
+            .all(|(record, _)| record.diffusion.is_some())
+        {
+            Some([0.0; 5])
+        } else {
+            None
+        };
+
+        let n_t = segments.iter().fold(0.0, |acc, (_, n)| acc + n);
+        segments.iter().for_each(|(s, n)| {
+            let s3 = s.m * s.sigma.powi(3) * *n;
+            if let Some(p) = viscosity.as_mut() {
+                let [a, b, c, d] = s.viscosity.unwrap();
+                p[0] += s3 * a;
+                p[1] += s3 * b / sigma3.powf(0.45);
+                p[2] += *n * c;
+                p[3] += *n * d;
+            }
+            if let Some(p) = thermal_conductivity.as_mut() {
+                let [a, b, c, d] = s.thermal_conductivity.unwrap();
+                p[0] += *n * a;
+                p[1] += *n * b;
+                p[2] += *n * c;
+                p[3] += n_t * d;
+            }
+            // if let Some(p) = diffusion.as_mut() {
+            //     let [a, b, c, d, e] = s.diffusion.unwrap();
+            //     p[0] += s3 * a;
+            //     p[1] += s3 * b / sigma3.powf(0.45);
+            //     p[2] += *n * c;
+            //     p[3] += *n * d;
+            // }
+        });
+
         Self {
             m,
             sigma: (sigma3 / m).cbrt(),
@@ -91,9 +143,9 @@ impl FromSegments for PcSaftRecord {
             epsilon_k_ab,
             na,
             nb,
-            viscosity: None,
-            diffusion: None,
-            thermal_conductivity: None,
+            viscosity,
+            diffusion,
+            thermal_conductivity,
         }
     }
 }

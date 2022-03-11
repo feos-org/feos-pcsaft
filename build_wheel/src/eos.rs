@@ -9,6 +9,7 @@ use quantity::python::*;
 use quantity::si::*;
 use std::collections::HashMap;
 use std::rc::Rc;
+use feos_core::utils::Loss;
 
 /// Initialize PC-SAFT equation of state.
 ///
