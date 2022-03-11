@@ -1,10 +1,9 @@
-use super::parameters::PyPcSaftParameters;
-use crate::eos::polar::DQVariants;
-use crate::eos::{PcSaft, PcSaftOptions};
 use feos_core::utils::{
     DataSet, EquilibriumLiquidDensity, Estimator, LiquidDensity, VaporPressure,
 };
 use feos_core::*;
+use feos_pcsaft::python::PyPcSaftParameters;
+use feos_pcsaft::{PcSaft, PcSaftOptions};
 use numpy::convert::ToPyArray;
 use numpy::{PyArray1, PyArray2};
 use pyo3::exceptions::PyValueError;
@@ -13,16 +12,6 @@ use quantity::python::*;
 use quantity::si::*;
 use std::collections::HashMap;
 use std::rc::Rc;
-
-impl From<&str> for DQVariants {
-    fn from(str: &str) -> Self {
-        match str {
-            "dq35" => Self::DQ35,
-            "dq44" => Self::DQ44,
-            _ => panic!("dq_variant must be either \"dq35\" or \"dq44\""),
-        }
-    }
-}
 
 /// Initialize PC-SAFT equation of state.
 ///
