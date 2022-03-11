@@ -276,11 +276,11 @@ impl EntropyScaling<SIUnit> for PcSaft {
     //                 .unwrap();
     //             let cp = State::critical_point_pure(&state.eos, Some(state.temperature)).unwrap();
     //             let s_res_cp_reduced = cp
-    //                 .entropy(Contributions::Residual)
+    //                 .entropy(Contributions::ResidualNvt)
     //                 .to_reduced(SIUnit::reference_entropy())
     //                 .unwrap();
     //             let s_res_reduced = cp
-    //                 .entropy(Contributions::Residual)
+    //                 .entropy(Contributions::ResidualNvt)
     //                 .to_reduced(SIUnit::reference_entropy())
     //                 .unwrap();
     //             let ref_ce = 0.083235
