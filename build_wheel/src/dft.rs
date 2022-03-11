@@ -1,14 +1,15 @@
-use super::parameters::*;
-use crate::dft::PcSaftFunctional;
 use feos_core::utils::{
     DataSet, EquilibriumLiquidDensity, Estimator, LiquidDensity, VaporPressure,
 };
 use feos_core::*;
 use feos_dft::adsorption::*;
+use feos_dft::fundamental_measure_theory::FMTVersion;
 use feos_dft::interface::*;
 use feos_dft::python::*;
 use feos_dft::solvation::*;
 use feos_dft::*;
+use feos_pcsaft::python::*;
+use feos_pcsaft::PcSaftFunctional;
 use numpy::*;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
@@ -54,10 +55,10 @@ impl PyPcSaftFunctional {
     /// PcSaftFunctional
     #[staticmethod]
     #[pyo3(text_signature = "(parameters, fmt_version)")]
-    fn new_full(parameters: PyPcSaftParameters, fmt_version: PyFMTVersion) -> Self {
+    fn new_full(parameters: PyPcSaftParameters, fmt_version: FMTVersion) -> Self {
         Self(Rc::new(PcSaftFunctional::new_full(
             parameters.0,
-            fmt_version.0,
+            fmt_version,
         )))
     }
 }
@@ -88,7 +89,7 @@ pub fn dft(py: Python<'_>, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyPhaseDiagramHetero>()?;
     m.add_class::<PyPhaseEquilibrium>()?;
     m.add_class::<PyPlanarInterface>()?;
-    m.add_class::<PyGeometry>()?;
+    m.add_class::<Geometry>()?;
     m.add_class::<PyPore1D>()?;
     m.add_class::<PyPore3D>()?;
     m.add_class::<PyPairCorrelation>()?;
@@ -98,7 +99,7 @@ pub fn dft(py: Python<'_>, m: &PyModule) -> PyResult<()> {
     m.add_class::<PySurfaceTensionDiagram>()?;
     m.add_class::<PyDFTSolver>()?;
     m.add_class::<PySolvationProfile>()?;
-    m.add_class::<PyFMTVersion>()?;
+    m.add_class::<FMTVersion>()?;
 
     let utils = PyModule::new(py, "utils")?;
     utils.add_class::<PyDataSet>()?;

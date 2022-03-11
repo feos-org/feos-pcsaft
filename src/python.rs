@@ -1,3 +1,4 @@
+use crate::eos::polar::DQVariants;
 use crate::parameters::{PcSaftParameters, PcSaftRecord};
 use feos_core::joback::JobackRecord;
 use feos_core::parameter::{
@@ -10,6 +11,16 @@ use numpy::{PyArray2, ToPyArray};
 use pyo3::prelude::*;
 use std::convert::TryFrom;
 use std::rc::Rc;
+
+impl From<&str> for DQVariants {
+    fn from(str: &str) -> Self {
+        match str {
+            "dq35" => Self::DQ35,
+            "dq44" => Self::DQ44,
+            _ => panic!("dq_variant must be either \"dq35\" or \"dq44\""),
+        }
+    }
+}
 
 /// Create a set of PC-Saft parameters from records.
 #[pyclass(name = "PcSaftRecord", unsendable)]
