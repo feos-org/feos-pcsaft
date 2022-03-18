@@ -1,6 +1,3 @@
-use feos_core::utils::{
-    DataSet, EquilibriumLiquidDensity, Estimator, LiquidDensity, VaporPressure,
-};
 use feos_core::*;
 use feos_dft::adsorption::*;
 use feos_dft::fundamental_measure_theory::FMTVersion;
@@ -69,8 +66,6 @@ impl_state!(DFT<PcSaftFunctional>, PyPcSaftFunctional);
 impl_state_molarweight!(DFT<PcSaftFunctional>, PyPcSaftFunctional);
 impl_vle_state!(DFT<PcSaftFunctional>, PyPcSaftFunctional);
 
-impl_estimator!(DFT<PcSaftFunctional>, PyPcSaftFunctional);
-
 impl_planar_interface!(PcSaftFunctional);
 impl_surface_tension_diagram!(PcSaftFunctional);
 
@@ -81,7 +76,7 @@ impl_pair_correlation!(PcSaftFunctional);
 impl_solvation_profile!(PcSaftFunctional);
 
 #[pymodule]
-pub fn dft(py: Python<'_>, m: &PyModule) -> PyResult<()> {
+pub fn dft(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyPcSaftFunctional>()?;
     m.add_class::<PyState>()?;
     m.add_class::<PyPhaseDiagramPure>()?;
@@ -100,10 +95,5 @@ pub fn dft(py: Python<'_>, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyDFTSolver>()?;
     m.add_class::<PySolvationProfile>()?;
     m.add_class::<FMTVersion>()?;
-
-    let utils = PyModule::new(py, "utils")?;
-    utils.add_class::<PyDataSet>()?;
-    utils.add_class::<PyEstimator>()?;
-    m.add_submodule(utils)?;
     Ok(())
 }

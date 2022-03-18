@@ -34,9 +34,7 @@ pub fn feos_pcsaft(py: Python<'_>, m: &PyModule) -> PyResult<()> {
         "\
 import sys
 sys.modules['feos_pcsaft.eos'] = eos
-sys.modules['feos_pcsaft.eos.utils'] = eos.utils
 sys.modules['feos_pcsaft.dft'] = dft
-sys.modules['feos_pcsaft.dft.utils'] = dft.utils
 quantity.SINumber.__module__ = 'feos_pcsaft.si'
 quantity.SIArray1.__module__ = 'feos_pcsaft.si'
 quantity.SIArray2.__module__ = 'feos_pcsaft.si'
