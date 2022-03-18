@@ -1,3 +1,4 @@
+use crate::eos::polar::DQVariants;
 use crate::parameters::{PcSaftParameters, PcSaftRecord};
 use feos_core::joback::JobackRecord;
 use feos_core::parameter::{
@@ -10,6 +11,16 @@ use numpy::{PyArray2, ToPyArray};
 use pyo3::prelude::*;
 use std::convert::TryFrom;
 use std::rc::Rc;
+
+impl From<&str> for DQVariants {
+    fn from(str: &str) -> Self {
+        match str {
+            "dq35" => Self::DQ35,
+            "dq44" => Self::DQ44,
+            _ => panic!("dq_variant must be either \"dq35\" or \"dq44\""),
+        }
+    }
+}
 
 /// Create a set of PC-Saft parameters from records.
 #[pyclass(name = "PcSaftRecord", unsendable)]
@@ -111,10 +122,7 @@ impl PyPcSaftRecord {
     fn get_thermal_conductivity(&self) -> Option<[f64; 4]> {
         self.0.thermal_conductivity
     }
-}
 
-#[pyproto]
-impl pyo3::class::basic::PyObjectProtocol for PyPcSaftRecord {
     fn __repr__(&self) -> PyResult<String> {
         Ok(self.0.to_string())
     }
@@ -172,10 +180,7 @@ impl PyPcSaftParameters {
     fn _repr_markdown_(&self) -> String {
         self.0.to_markdown()
     }
-}
 
-#[pyproto]
-impl pyo3::class::basic::PyObjectProtocol for PyPcSaftParameters {
     fn __repr__(&self) -> PyResult<String> {
         Ok(self.0.to_string())
     }

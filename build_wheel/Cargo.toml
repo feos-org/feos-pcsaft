@@ -9,5 +9,9 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
+quantity = "0.5"
+feos-core = { git = "https://github.com/feos-org/feos-core" }
+feos-dft = { git = "https://github.com/feos-org/feos-dft", branch = "v0.2.0" }
 feos-pcsaft = { path = "..", features = ["python"] }
-pyo3 = { version = "0.15", features = ["extension-module", "abi3", "abi3-py37"] }
+pyo3 = { version = "0.16", features = ["extension-module", "abi3", "abi3-py37"] }
+numpy = "0.16"

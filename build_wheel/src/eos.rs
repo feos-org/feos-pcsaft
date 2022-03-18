@@ -1,11 +1,6 @@
-use super::parameters::PyPcSaftParameters;
-use crate::eos::polar::DQVariants;
-use crate::eos::{PcSaft, PcSaftOptions};
-use feos_core::python::{PyContributions, PyVerbosity};
-use feos_core::utils::{
-    DataSet, EquilibriumLiquidDensity, Estimator, LiquidDensity, VaporPressure,
-};
 use feos_core::*;
+use feos_pcsaft::python::PyPcSaftParameters;
+use feos_pcsaft::{PcSaft, PcSaftOptions};
 use numpy::convert::ToPyArray;
 use numpy::{PyArray1, PyArray2};
 use pyo3::exceptions::PyValueError;
@@ -14,16 +9,6 @@ use quantity::python::*;
 use quantity::si::*;
 use std::collections::HashMap;
 use std::rc::Rc;
-
-impl From<&str> for DQVariants {
-    fn from(str: &str) -> Self {
-        match str {
-            "dq35" => Self::DQ35,
-            "dq44" => Self::DQ44,
-            _ => panic!("dq_variant must be either \"dq35\" or \"dq44\""),
-        }
-    }
-}
 
 /// Initialize PC-SAFT equation of state.
 ///
@@ -83,20 +68,14 @@ impl_state!(PcSaft, PyPcSaft);
 impl_state_molarweight!(PcSaft, PyPcSaft);
 impl_state_entropy_scaling!(PcSaft, PyPcSaft);
 impl_vle_state!(PcSaft, PyPcSaft);
-impl_estimator!(PcSaft, PyPcSaft);
 
 #[pymodule]
-pub fn eos(py: Python<'_>, m: &PyModule) -> PyResult<()> {
+pub fn eos(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyPcSaft>()?;
     m.add_class::<PyState>()?;
     m.add_class::<PyPhaseDiagramPure>()?;
     m.add_class::<PyPhaseDiagramBinary>()?;
     m.add_class::<PyPhaseDiagramHetero>()?;
     m.add_class::<PyPhaseEquilibrium>()?;
-
-    let utils = PyModule::new(py, "utils")?;
-    utils.add_class::<PyDataSet>()?;
-    utils.add_class::<PyEstimator>()?;
-    m.add_submodule(utils)?;
     Ok(())
 }
