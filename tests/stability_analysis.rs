@@ -32,11 +32,11 @@ fn test_stability_analysis() -> Result<(), Box<dyn Error>> {
         IdentifierOption::Name,
     )?;
     let mix = Rc::new(PcSaft::new(Rc::new(params)));
-    let vle = PhaseEquilibrium::bubble_point_tx(
+    let vle = PhaseEquilibrium::bubble_point(
         &mix,
         300.0 * KELVIN,
-        Some(6.0 * BAR),
         &arr1(&[0.5, 0.5]),
+        Some(6.0 * BAR),
         None,
         Default::default(),
     )?;

@@ -21,10 +21,10 @@ fn test_tp_flash() -> Result<(), Box<dyn Error>> {
     let propane = Rc::new(PcSaft::new(read_params(vec!["propane"])?));
     let butane = Rc::new(PcSaft::new(read_params(vec!["butane"])?));
     let t = 250.0 * KELVIN;
-    let p_propane = PhaseEquilibrium::pure_t(&propane, t, None, Default::default())?
+    let p_propane = PhaseEquilibrium::pure(&propane, t, None, Default::default())?
         .vapor()
         .pressure(Contributions::Total);
-    let p_butane = PhaseEquilibrium::pure_t(&butane, t, None, Default::default())?
+    let p_butane = PhaseEquilibrium::pure(&butane, t, None, Default::default())?
         .vapor()
         .pressure(Contributions::Total);
     let x1 = 0.5;

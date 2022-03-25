@@ -368,7 +368,7 @@ fn test_consistency() -> Result<(), Box<dyn Error>> {
             .density(density)
             .build()?;
 
-        let vle = PhaseEquilibrium::pure_t(&saft, temperature, None, Default::default());
+        let vle = PhaseEquilibrium::pure(&saft, temperature, None, Default::default());
         let builder = if let Ok(ps) = vle {
             let p_sat = ps.liquid().pressure(Contributions::Total);
             if pressure > p_sat {

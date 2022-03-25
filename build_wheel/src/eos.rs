@@ -67,15 +67,13 @@ impl_virial_coefficients!(PyPcSaft);
 impl_state!(PcSaft, PyPcSaft);
 impl_state_molarweight!(PcSaft, PyPcSaft);
 impl_state_entropy_scaling!(PcSaft, PyPcSaft);
-impl_vle_state!(PcSaft, PyPcSaft);
+impl_phase_equilibrium!(PcSaft, PyPcSaft);
 
 #[pymodule]
 pub fn eos(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyPcSaft>()?;
     m.add_class::<PyState>()?;
-    m.add_class::<PyPhaseDiagramPure>()?;
-    m.add_class::<PyPhaseDiagramBinary>()?;
-    m.add_class::<PyPhaseDiagramHetero>()?;
+    m.add_class::<PyPhaseDiagram>()?;
     m.add_class::<PyPhaseEquilibrium>()?;
     Ok(())
 }

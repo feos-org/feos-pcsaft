@@ -23,7 +23,7 @@ fn vle_pure_temperature() -> Result<(), Box<dyn Error>> {
         350.0 * KELVIN,
     ];
     for &t in temperatures.iter() {
-        let state = PhaseEquilibrium::pure_t(&saft, t, None, Default::default())?;
+        let state = PhaseEquilibrium::pure(&saft, t, None, Default::default())?;
         assert_relative_eq!(state.vapor().temperature, t, max_relative = 1e-10);
         assert_relative_eq!(
             state.vapor().pressure(Contributions::Total),
@@ -45,7 +45,7 @@ fn vle_pure_pressure() -> Result<(), Box<dyn Error>> {
     let saft = Rc::new(PcSaft::new(Rc::new(params)));
     let pressures = [0.1 * BAR, 1.0 * BAR, 10.0 * BAR, 30.0 * BAR, 44.0 * BAR];
     for &p in pressures.iter() {
-        let state = PhaseEquilibrium::pure_p(&saft, p, None, Default::default())?;
+        let state = PhaseEquilibrium::pure(&saft, p, None, Default::default())?;
         println!(
             "liquid-p: {} vapor-p: {} p:{}",
             state.liquid().pressure(Contributions::Total),
