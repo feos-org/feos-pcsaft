@@ -15,8 +15,7 @@ exclude = ["/.github/*", "*.ipynb", "/examples/*", "/parameters/*"]
 [dependencies]
 quantity = "0.5"
 feos-core = { git = "https://github.com/feos-org/feos-core", branch = "state_vec" }
-#feos-dft = { git = "https://github.com/feos-org/feos-dft", branch = "v0.2.0" }
-feos-dft = { path = "../feos-dft" }
+feos-dft = { git = "https://github.com/feos-org/feos-dft", branch = "v0.2.0" }
 num-dual = "0.5"
 num-traits = "0.2"
 ndarray = { version = "0.15", features=["approx"] }
