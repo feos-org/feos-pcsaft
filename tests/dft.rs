@@ -107,9 +107,9 @@ fn test_dft_propane() -> Result<(), Box<dyn Error>> {
     let w = 150.0 * ANGSTROM;
     let points = 2048;
     let tc = State::critical_point(&func_pure, None, None, Default::default())?.temperature;
-    let vle_pure = PhaseEquilibrium::pure_t(&func_pure, t, None, Default::default())?;
-    let vle_full = PhaseEquilibrium::pure_t(&func_full, t, None, Default::default())?;
-    let vle_full_vec = PhaseEquilibrium::pure_t(&func_full_vec, t, None, Default::default())?;
+    let vle_pure = PhaseEquilibrium::pure(&func_pure, t, None, Default::default())?;
+    let vle_full = PhaseEquilibrium::pure(&func_full, t, None, Default::default())?;
+    let vle_full_vec = PhaseEquilibrium::pure(&func_full_vec, t, None, Default::default())?;
     let profile_pure = PlanarInterface::from_tanh(&vle_pure, points, w, tc)?.solve(None)?;
     let profile_full = PlanarInterface::from_tanh(&vle_full, points, w, tc)?.solve(None)?;
     let profile_full_vec = PlanarInterface::from_tanh(&vle_full_vec, points, w, tc)?.solve(None)?;
@@ -227,8 +227,8 @@ fn test_dft_water() -> Result<(), Box<dyn Error>> {
     let w = 120.0 * ANGSTROM;
     let points = 2048;
     let tc = State::critical_point(&func_pure, None, None, Default::default())?.temperature;
-    let vle_pure = PhaseEquilibrium::pure_t(&func_pure, t, None, Default::default())?;
-    let vle_full_vec = PhaseEquilibrium::pure_t(&func_full_vec, t, None, Default::default())?;
+    let vle_pure = PhaseEquilibrium::pure(&func_pure, t, None, Default::default())?;
+    let vle_full_vec = PhaseEquilibrium::pure(&func_full_vec, t, None, Default::default())?;
     let profile_pure = PlanarInterface::from_tanh(&vle_pure, points, w, tc)?.solve(None)?;
     let profile_full_vec = PlanarInterface::from_tanh(&vle_full_vec, points, w, tc)?.solve(None)?;
     println!(
@@ -303,7 +303,7 @@ fn test_entropy_bulk_values() -> Result<(), Box<dyn Error>> {
         IdentifierOption::Name,
     )?;
     let func = Rc::new(PcSaftFunctional::new(Rc::new(params)));
-    let vle = PhaseEquilibrium::pure_t(&func, 350.0 * KELVIN, None, Default::default())?;
+    let vle = PhaseEquilibrium::pure(&func, 350.0 * KELVIN, None, Default::default())?;
     let profile = PlanarInterface::from_pdgt(&vle, 2048)?.solve(None)?;
     let s_res = profile
         .profile

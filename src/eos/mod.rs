@@ -429,10 +429,10 @@ mod tests {
     }
 
     #[test]
-    fn vle_pure_t() {
+    fn vle_pure() {
         let e = Rc::new(PcSaft::new(propane_parameters()));
         let t = 300.0 * KELVIN;
-        let vle = PhaseEquilibrium::pure_t(&e, t, None, Default::default());
+        let vle = PhaseEquilibrium::pure(&e, t, None, Default::default());
         if let Ok(v) = vle {
             assert_relative_eq!(
                 v.vapor().pressure(Contributions::Total),
