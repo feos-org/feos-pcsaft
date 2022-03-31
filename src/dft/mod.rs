@@ -34,14 +34,14 @@ pub struct PcSaftFunctional {
 
 impl PcSaftFunctional {
     pub fn new(parameters: Rc<PcSaftParameters>) -> DFT<Self> {
-        Self::new_with_options(parameters, FMTVersion::WhiteBear, PcSaftOptions::default())
+        Self::with_options(parameters, FMTVersion::WhiteBear, PcSaftOptions::default())
     }
 
     pub fn new_full(parameters: Rc<PcSaftParameters>, fmt_version: FMTVersion) -> DFT<Self> {
-        Self::new_with_options(parameters, fmt_version, PcSaftOptions::default())
+        Self::with_options(parameters, fmt_version, PcSaftOptions::default())
     }
 
-    fn new_with_options(
+    pub fn with_options(
         parameters: Rc<PcSaftParameters>,
         fmt_version: FMTVersion,
         saft_options: PcSaftOptions,
@@ -106,7 +106,7 @@ impl PcSaftFunctional {
 
 impl HelmholtzEnergyFunctional for PcSaftFunctional {
     fn subset(&self, component_list: &[usize]) -> DFT<Self> {
-        Self::new_with_options(
+        Self::with_options(
             Rc::new(self.parameters.subset(component_list)),
             self.fmt_version,
             self.options,
