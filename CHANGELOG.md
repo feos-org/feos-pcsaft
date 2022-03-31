@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Added optional arguments to the constructor of `PcSaftFunctional` in Python to make it more analogous to `PcSaft`. [#34](https://github.com/feos-org/feos-pcsaft/pull/34)
+- Building Pc-SAFT parameters from segments does not check anymore, whether multiple polar or associating groups are present. [#33](https://github.com/feos-org/feos-pcsaft/pull/33)
 
 ## [0.1.0] - 2022-01-12
 ### Added
