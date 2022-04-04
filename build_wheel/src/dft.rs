@@ -22,7 +22,7 @@ use std::rc::Rc;
 /// parameters: PcSaftParameters
 ///     The set of PC-SAFT parameters.
 /// fmt_version: FMTVersion, optional
-///     The specific variant of the FMT term. Defaults to FMTVersion::WhiteBear
+///     The specific variant of the FMT term. Defaults to FMTVersion.WhiteBear
 /// max_eta : float, optional
 ///     Maximum packing fraction. Defaults to 0.5.
 /// max_iter_cross_assoc : unsigned integer, optional
