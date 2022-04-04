@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `PcSaftFunctional` now always uses `Joback` as ideal gas model if parameters are available. [#25](https://github.com/feos-org/feos-pcsaft/pull/25)
 
+### Changed
+- Added optional arguments to the constructor of `PcSaftFunctional` in Python to make it more analogous to `PcSaft`. [#34](https://github.com/feos-org/feos-pcsaft/pull/34)
+
 ## [0.1.0] - 2022-01-12
 ### Added
 - Initial release
