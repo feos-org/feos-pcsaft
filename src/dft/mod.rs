@@ -8,7 +8,7 @@ use feos_core::{IdealGasContribution, MolarWeight};
 use feos_dft::adsorption::FluidParameters;
 use feos_dft::fundamental_measure_theory::{FMTContribution, FMTProperties, FMTVersion};
 use feos_dft::solvation::PairPotential;
-use feos_dft::{FunctionalContribution, HelmholtzEnergyFunctional, DFT};
+use feos_dft::{FunctionalContribution, HelmholtzEnergyFunctional, MoleculeShape, DFT};
 use hard_chain::ChainFunctional;
 use ndarray::{Array, Array1, Array2};
 use num_dual::DualNum;
@@ -92,15 +92,14 @@ impl PcSaftFunctional {
             None => Joback::default(parameters.m.len()),
         };
 
-        let func = Self {
+        (Self {
             parameters: parameters.clone(),
             fmt_version,
             options: saft_options,
             contributions,
             joback,
-        };
-
-        DFT::new_homosegmented(func, &parameters.m)
+        })
+        .into()
     }
 }
 
@@ -125,6 +124,10 @@ impl HelmholtzEnergyFunctional for PcSaftFunctional {
 
     fn ideal_gas(&self) -> &dyn IdealGasContribution {
         &self.joback
+    }
+
+    fn molecule_shape(&self) -> MoleculeShape {
+        MoleculeShape::NonSpherical(&self.parameters.m)
     }
 }
 
@@ -155,10 +158,6 @@ impl FluidParameters for PcSaftFunctional {
 
     fn sigma_ff(&self) -> &Array1<f64> {
         &self.parameters.sigma
-    }
-
-    fn m(&self) -> Array1<f64> {
-        self.parameters.m.clone()
     }
 }
 
