@@ -105,10 +105,6 @@ impl PcSaftFunctional {
 }
 
 impl HelmholtzEnergyFunctional for PcSaftFunctional {
-    fn components(&self) -> usize {
-        self.parameters.m.len()
-    }
-
     fn subset(&self, component_list: &[usize]) -> DFT<Self> {
         Self::with_options(
             Rc::new(self.parameters.subset(component_list)),
