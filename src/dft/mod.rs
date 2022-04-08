@@ -8,14 +8,13 @@ use feos_core::{IdealGasContribution, MolarWeight};
 use feos_dft::adsorption::FluidParameters;
 use feos_dft::fundamental_measure_theory::{FMTContribution, FMTProperties, FMTVersion};
 use feos_dft::solvation::PairPotential;
-use feos_dft::{FunctionalContribution, HelmholtzEnergyFunctional, DFT};
+use feos_dft::{FunctionalContribution, HelmholtzEnergyFunctional, MoleculeShape, DFT};
 use hard_chain::ChainFunctional;
 use ndarray::{Array, Array1, Array2};
 use num_dual::DualNum;
 use num_traits::One;
 use pure_saft_functional::*;
 use quantity::si::*;
-use std::borrow::Cow;
 use std::f64::consts::FRAC_PI_6;
 use std::rc::Rc;
 
@@ -127,8 +126,8 @@ impl HelmholtzEnergyFunctional for PcSaftFunctional {
         &self.joback
     }
 
-    fn m(&self) -> Cow<Array1<f64>> {
-        Cow::Borrowed(&self.parameters.m)
+    fn molecule_shape(&self) -> MoleculeShape {
+        MoleculeShape::NonSpherical(&self.parameters.m)
     }
 }
 
