@@ -159,10 +159,6 @@ impl FluidParameters for PcSaftFunctional {
     fn sigma_ff(&self) -> &Array1<f64> {
         &self.parameters.sigma
     }
-
-    fn m(&self) -> Array1<f64> {
-        self.parameters.m.clone()
-    }
 }
 
 impl PairPotential for PcSaftFunctional {
