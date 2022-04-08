@@ -15,6 +15,7 @@ use num_dual::DualNum;
 use num_traits::One;
 use pure_saft_functional::*;
 use quantity::si::*;
+use std::borrow::Cow;
 use std::f64::consts::FRAC_PI_6;
 use std::rc::Rc;
 
@@ -92,15 +93,14 @@ impl PcSaftFunctional {
             None => Joback::default(parameters.m.len()),
         };
 
-        let func = Self {
+        (Self {
             parameters: parameters.clone(),
             fmt_version,
             options: saft_options,
             contributions,
             joback,
-        };
-
-        DFT::new_homosegmented(func, &parameters.m)
+        })
+        .into()
     }
 }
 
@@ -125,6 +125,10 @@ impl HelmholtzEnergyFunctional for PcSaftFunctional {
 
     fn ideal_gas(&self) -> &dyn IdealGasContribution {
         &self.joback
+    }
+
+    fn m(&self) -> Cow<Array1<f64>> {
+        Cow::Borrowed(&self.parameters.m)
     }
 }
 
