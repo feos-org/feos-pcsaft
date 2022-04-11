@@ -321,49 +321,6 @@ impl EntropyScaling<SIUnit> for PcSaft {
         Ok(res[0])
     }
 
-    // // Equation 11 of DOI: 10.1021/acs.iecr.9b03998
-    // fn thermal_conductivity_reference(
-    //     &self,
-    //     temperature: SINumber,
-    //     volume: SINumber,
-    //     moles: &SIArray1,
-    // ) -> EosResult<SINumber> {
-    //     if self.components() != 1 {
-    //         return Err(EosError::IncompatibleComponents(self.components(), 1));
-    //     }
-    //     let p = &self.parameters;
-    //     let state = State::new_nvt(&Rc::new(Self::new(p.clone())), temperature, volume, moles)?;
-    //     let res: Array1<SINumber> = (0..self.components())
-    //         .map(|i| {
-    //             let tr = (temperature / p.epsilon_k[i] / KELVIN)
-    //                 .into_value()
-    //                 .unwrap();
-    //             let ce = 83.235
-    //                 * f64::powf(10.0, -1.5)
-    //                 * ((temperature / KELVIN).into_value().unwrap() / p.molarweight[0] * p.m[0])
-    //                     .sqrt()
-    //                 / (p.sigma[0] * p.sigma[0])
-    //                 / omega22(tr);
-    //             ce * WATT / METER / KELVIN
-    //                 + state.density
-    //                     * self
-    //                         .diffusion_reference(temperature, volume, moles)
-    //                         .unwrap()
-    //                     * self
-    //                         .diffusion_correlation(
-    //                             state
-    //                                 .molar_entropy(Contributions::ResidualNvt)
-    //                                 .to_reduced(SIUnit::reference_molar_entropy())
-    //                                 .unwrap(),
-    //                             &state.molefracs,
-    //                         )
-    //                         .unwrap()
-    //                     * (state.c_v(Contributions::Total) - 1.5 * RGAS)
-    //         })
-    //         .collect();
-    //     Ok(res[0])
-    // }
-
     fn thermal_conductivity_correlation(&self, s_res: f64, x: &Array1<f64>) -> EosResult<f64> {
         if self.components() != 1 {
             return Err(EosError::IncompatibleComponents(self.components(), 1));
