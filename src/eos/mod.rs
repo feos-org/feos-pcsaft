@@ -2,7 +2,7 @@ use crate::parameters::PcSaftParameters;
 use feos_core::joback::Joback;
 use feos_core::parameter::Parameter;
 use feos_core::{
-    Contributions, EntropyScaling, EosError, EosResult, EosUnit, EquationOfState, HelmholtzEnergy,
+    Contributions, EntropyScaling, EosError, EosResult, EquationOfState, HelmholtzEnergy,
     IdealGasContribution, MolarWeight, State,
 };
 use ndarray::Array1;
