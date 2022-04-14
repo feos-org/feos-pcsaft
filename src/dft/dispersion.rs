@@ -23,9 +23,7 @@ pub struct AttractiveFunctional {
 
 impl AttractiveFunctional {
     pub fn new(parameters: Rc<PcSaftParameters>) -> Self {
-        Self {
-            parameters: parameters.clone(),
-        }
+        Self { parameters }
     }
 }
 

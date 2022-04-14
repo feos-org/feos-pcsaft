@@ -15,7 +15,7 @@ pub(super) fn hard_chain_weight_functions<N: DualNum<f64> + ScalarOperand, P: FM
     lambda: bool,
 ) -> WeightFunctionInfo<N> {
     let d = p.hs_diameter(temperature);
-    let mut weight_functions = WeightFunctionInfo::new(p.component_index().clone(), true)
+    let mut weight_functions = WeightFunctionInfo::new(p.component_index(), true)
         .add(
             WeightFunction {
                 prefactor: p.chain_length().mapv(|m| m.into()) / (&d * 8.0),
@@ -48,9 +48,7 @@ pub struct ChainFunctional {
 
 impl ChainFunctional {
     pub fn new(parameters: Rc<PcSaftParameters>) -> Self {
-        Self {
-            parameters: parameters.clone(),
-        }
+        Self { parameters }
     }
 }
 
