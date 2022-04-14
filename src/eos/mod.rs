@@ -2,7 +2,7 @@ use crate::parameters::PcSaftParameters;
 use feos_core::joback::Joback;
 use feos_core::parameter::Parameter;
 use feos_core::{
-    Contributions, EntropyScaling, EosError, EosResult, EosUnit, EquationOfState, HelmholtzEnergy,
+    Contributions, EntropyScaling, EosError, EosResult, EquationOfState, HelmholtzEnergy,
     IdealGasContribution, MolarWeight, State,
 };
 use ndarray::Array1;
@@ -161,6 +161,23 @@ fn omega22(t: f64) -> f64 {
         - 6.435e-4 * t.powf(0.14874) * (18.0323 * t.powf(-0.76830) - 7.27371).sin()
 }
 
+#[inline]
+fn chapman_enskog_thermal_conductivity(
+    temperature: SINumber,
+    molarweight: SINumber,
+    m: f64,
+    sigma: f64,
+    epsilon_k: f64,
+) -> SINumber {
+    let t = temperature.to_reduced(KELVIN).unwrap();
+    0.083235 * (t * m / molarweight.to_reduced(GRAM / MOL).unwrap()).sqrt()
+        / sigma.powi(2)
+        / omega22(t / epsilon_k)
+        * WATT
+        / METER
+        / KELVIN
+}
+
 impl EntropyScaling<SIUnit> for PcSaft {
     fn viscosity_reference(
         &self,
@@ -170,6 +187,7 @@ impl EntropyScaling<SIUnit> for PcSaft {
     ) -> EosResult<SINumber> {
         let p = &self.parameters;
         let mw = &p.molarweight;
+        let x = moles.to_reduced(moles.sum())?;
         let ce: Array1<SINumber> = (0..self.components())
             .map(|i| {
                 let tr = (temperature / p.epsilon_k[i] / KELVIN)
@@ -183,7 +201,6 @@ impl EntropyScaling<SIUnit> for PcSaft {
                     / (p.sigma[i] * ANGSTROM).powi(2)
             })
             .collect();
-        let x = moles.to_reduced(moles.sum())?;
         let mut ce_mix = 0.0 * MILLI * PASCAL * SECOND;
         for i in 0..self.components() {
             let denom: f64 = (0..self.components())
@@ -208,7 +225,7 @@ impl EntropyScaling<SIUnit> for PcSaft {
             .expect("Missing viscosity coefficients.");
         let m = (x * &self.parameters.m).sum();
         let s = s_res / m;
-        let pref = (x * &self.parameters.m).mapv(|v| v / m);
+        let pref = (x * &self.parameters.m) / m;
         let a: f64 = (&coefficients.row(0) * x).sum();
         let b: f64 = (&coefficients.row(1) * &pref).sum();
         let c: f64 = (&coefficients.row(2) * &pref).sum();
@@ -261,48 +278,7 @@ impl EntropyScaling<SIUnit> for PcSaft {
         Ok(a + b * s - c * (1.0 - s.exp()) * s.powi(2) - d * s.powi(4) - e * s.powi(8))
     }
 
-    // fn thermal_conductivity_reference(
-    //     &self,
-    //     state: &State<SIUnit, E>,
-    // ) -> EosResult<SINumber> {
-    //     if self.components() != 1 {
-    //         return Err(EosError::IncompatibleComponents(self.components(), 1));
-    //     }
-    //     let p = &self.parameters;
-    //     let res: Array1<SINumber> = (0..self.components())
-    //         .map(|i| {
-    //             let tr = (temperature / p.epsilon_k[i] / KELVIN)
-    //                 .into_value()
-    //                 .unwrap();
-    //             let cp = State::critical_point_pure(&state.eos, Some(state.temperature)).unwrap();
-    //             let s_res_cp_reduced = cp
-    //                 .entropy(Contributions::Residual)
-    //                 .to_reduced(SIUnit::reference_entropy())
-    //                 .unwrap();
-    //             let s_res_reduced = cp
-    //                 .entropy(Contributions::Residual)
-    //                 .to_reduced(SIUnit::reference_entropy())
-    //                 .unwrap();
-    //             let ref_ce = 0.083235
-    //                 * ((temperature / KELVIN).into_value().unwrap()
-    //                     / (p.molarweight[0]
-    //                     / p.m[0]))
-    //                     .sqrt()
-    //                 / p.sigma[0]
-    //                 / p.sigma[0]
-    //                 / omega22(tr)
-    //                 * p.m[0];
-    //             let alpha_visc = (-s_res_reduced / s_res_cp_reduced).exp();
-    //             let ref_ts = (-0.0167141 * tr / p.m[0] + 0.0470581 * (tr / p.m[0]).powi(2))
-    //                 * (p.m[0] * p.m[0] * p.sigma[i].powi(3) * p.epsilon_k[0])
-    //                 / 100000.0;
-    //             (ref_ce + ref_ts * alpha_visc) * WATT / METER / KELVIN
-    //         })
-    //         .collect();
-    //     Ok(res[0])
-    // }
-
-    // Equation 11 of DOI: 10.1021/acs.iecr.9b03998
+    // Equation 4 of DOI: 10.1021/acs.iecr.9b04289
     fn thermal_conductivity_reference(
         &self,
         temperature: SINumber,
@@ -313,38 +289,33 @@ impl EntropyScaling<SIUnit> for PcSaft {
             return Err(EosError::IncompatibleComponents(self.components(), 1));
         }
         let p = &self.parameters;
-        let state = State::new_nvt(
-            &Rc::new(Self::new(self.parameters.clone())),
-            temperature,
-            volume,
-            moles,
-        )?;
+        let mws = self.molar_weight();
+        let state = State::new_nvt(&Rc::new(Self::new(p.clone())), temperature, volume, moles)?;
         let res: Array1<SINumber> = (0..self.components())
             .map(|i| {
                 let tr = (temperature / p.epsilon_k[i] / KELVIN)
                     .into_value()
                     .unwrap();
-                let ce = 83.235
-                    * f64::powf(10.0, -1.5)
-                    * ((temperature / KELVIN).into_value().unwrap() / p.molarweight[0] * p.m[0])
-                        .sqrt()
-                    / (p.sigma[0] * p.sigma[0])
-                    / omega22(tr);
-                ce * WATT / METER / KELVIN
-                    + state.density
-                        * self
-                            .diffusion_reference(temperature, volume, moles)
-                            .unwrap()
-                        * self
-                            .diffusion_correlation(
-                                state
-                                    .molar_entropy(Contributions::ResidualNvt)
-                                    .to_reduced(SIUnit::reference_molar_entropy())
-                                    .unwrap(),
-                                &state.molefracs,
-                            )
-                            .unwrap()
-                        * (state.c_v(Contributions::Total) - 1.5 * RGAS)
+                let s_res_reduced = state
+                    .molar_entropy(Contributions::ResidualNvt)
+                    .to_reduced(RGAS)
+                    .unwrap()
+                    / p.m[i];
+                let ref_ce = chapman_enskog_thermal_conductivity(
+                    temperature,
+                    mws.get(i),
+                    p.m[i],
+                    p.sigma[i],
+                    p.epsilon_k[i],
+                );
+                let alpha_visc = (-s_res_reduced / -0.5).exp();
+                let ref_ts = (-0.0167141 * tr / p.m[i] + 0.0470581 * (tr / p.m[i]).powi(2))
+                    * (p.m[i] * p.m[i] * p.sigma[i].powi(3) * p.epsilon_k[i])
+                    * 1e-5
+                    * WATT
+                    / METER
+                    / KELVIN;
+                ref_ce + ref_ts * alpha_visc
             })
             .collect();
         Ok(res[0])

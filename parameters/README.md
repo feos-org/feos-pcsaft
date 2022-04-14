@@ -32,4 +32,6 @@ The files named according to the pattern `NameYear.json` correspond to published
 |-|-|:-:|
 [`sauer2014_homo.json`](sauer2014_homo.json) | GC segment parameters for homo segmented PC-SAFT | [&#128279;](https://doi.org/10.1021/ie502203w) |
 [`sauer2014_hetero.json`](sauer2014_hetero.json) | GC segment parameters for hetero segmented PC-SAFT | [&#128279;](https://doi.org/10.1021/ie502203w)
+[`loetgeringlin2015_homo.json`](loetgeringlin2015_homo.json) | GC segment parameters for homo segmented PC-SAFT including parameters for viscosity for entropy scaling | [&#128279;](https://doi.org/10.1021/acs.iecr.5b01698)
+
 

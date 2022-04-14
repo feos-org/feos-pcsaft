@@ -24,7 +24,7 @@ pub struct AssociationFunctional {
 impl AssociationFunctional {
     pub fn new(parameters: Rc<PcSaftParameters>, max_iter: usize, tol: f64) -> Self {
         Self {
-            parameters: parameters.clone(),
+            parameters,
             max_iter,
             tol,
         }
@@ -54,7 +54,7 @@ where
             .add(
                 WeightFunction {
                     prefactor: p.m.mapv(N::from),
-                    kernel_radius: r.clone(),
+                    kernel_radius: r,
                     shape: WeightFunctionShape::Theta,
                 },
                 true,

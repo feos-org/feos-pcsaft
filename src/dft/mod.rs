@@ -54,27 +54,27 @@ impl PcSaftFunctional {
         ) && parameters.m.len() == 1
         {
             let fmt_assoc = PureFMTAssocFunctional::new(parameters.clone(), fmt_version);
-            contributions.push(Box::new(fmt_assoc.clone()));
+            contributions.push(Box::new(fmt_assoc));
             if parameters.m.iter().any(|&mi| mi > 1.0) {
                 let chain = PureChainFunctional::new(parameters.clone());
-                contributions.push(Box::new(chain.clone()));
+                contributions.push(Box::new(chain));
             }
             let att = PureAttFunctional::new(parameters.clone());
-            contributions.push(Box::new(att.clone()));
+            contributions.push(Box::new(att));
         } else {
             // Hard sphere contribution
             let hs = FMTContribution::new(&parameters, fmt_version);
-            contributions.push(Box::new(hs.clone()));
+            contributions.push(Box::new(hs));
 
             // Hard chains
             if parameters.m.iter().any(|&mi| !mi.is_one()) {
                 let chain = ChainFunctional::new(parameters.clone());
-                contributions.push(Box::new(chain.clone()));
+                contributions.push(Box::new(chain));
             }
 
             // Dispersion
             let att = AttractiveFunctional::new(parameters.clone());
-            contributions.push(Box::new(att.clone()));
+            contributions.push(Box::new(att));
 
             // Association
             if parameters.nassoc > 0 {
@@ -83,7 +83,7 @@ impl PcSaftFunctional {
                     saft_options.max_iter_cross_assoc,
                     saft_options.tol_cross_assoc,
                 );
-                contributions.push(Box::new(assoc.clone()));
+                contributions.push(Box::new(assoc));
             }
         }
 
@@ -93,7 +93,7 @@ impl PcSaftFunctional {
         };
 
         (Self {
-            parameters: parameters.clone(),
+            parameters,
             fmt_version,
             options: saft_options,
             contributions,

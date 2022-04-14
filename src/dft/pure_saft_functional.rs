@@ -170,7 +170,7 @@ impl<N: DualNum<f64> + ScalarOperand> FunctionalContributionDual<N> for PureChai
             .add(
                 WeightFunction {
                     prefactor: (&self.parameters.m / 8.0).mapv(|x| x.into()),
-                    kernel_radius: d.clone(),
+                    kernel_radius: d,
                     shape: WeightFunctionShape::Theta,
                 },
                 false,

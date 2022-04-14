@@ -1,3 +1,4 @@
+#![allow(clippy::excessive_precision)]
 use approx::assert_relative_eq;
 use feos_core::parameter::{IdentifierOption, Parameter};
 use feos_core::{Contributions, PhaseEquilibrium, State};
@@ -41,19 +42,19 @@ fn test_bulk_implementations() -> Result<(), Box<dyn Error>> {
     println!("{}: {}", p[0].0, p[0].1);
     println!("{}: {}", p_pure[0].0, p_pure[0].1);
     println!("{}: {}", p_full[0].0, p_full[0].1);
-    println!("");
+    println!();
     println!("{:20}: {}", p[1].0, p[1].1);
     println!("{:20}: {}", p_pure[1].0, p_pure[1].1);
     println!("{:20}: {}", p_full[1].0, p_full[1].1);
-    println!("");
+    println!();
     println!("{:21}: {}", p[2].0, p[2].1);
     println!("{:21}: {}", p_pure[2].0, p_pure[2].1);
     println!("{:21}: {}", p_full[2].0, p_full[2].1);
-    println!("");
+    println!();
     println!("{:21}: {}", p[3].0, p[3].1);
     println!("{:21}: {}", p_pure[3].0, p_pure[3].1 + p_pure[4].1);
     println!("{:21}: {}", p_full[3].0, p_full[3].1 + p_full[5].1);
-    println!("");
+    println!();
     println!("{:21}: {}", p[4].0, p[4].1);
     println!("{:21}: {}", p_full[4].0, p_full[4].1);
 

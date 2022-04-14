@@ -23,7 +23,7 @@ fn test_stability_analysis() -> Result<(), Box<dyn Error>> {
         DensityInitialization::Liquid,
     )?;
     let check = unstable.stability_analysis(Default::default())?;
-    assert!(check.len() > 0);
+    assert!(!check.is_empty());
 
     let params = PcSaftParameters::from_json(
         vec!["propane", "butane"],
@@ -42,7 +42,7 @@ fn test_stability_analysis() -> Result<(), Box<dyn Error>> {
     )?;
     let vapor_check = vle.vapor().stability_analysis(Default::default())?;
     let liquid_check = vle.liquid().stability_analysis(Default::default())?;
-    assert!(vapor_check.len() == 0);
-    assert!(liquid_check.len() == 0);
+    assert!(vapor_check.is_empty());
+    assert!(liquid_check.is_empty());
     Ok(())
 }
