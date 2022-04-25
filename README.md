@@ -26,7 +26,7 @@ Add this to your `Cargo.toml`
 
 ```toml
 [dependencies]
-feos-pcsaft = "0.1"
+feos-pcsaft = "0.2"
 ```
 
 ## Test building python wheel
