@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.2.0] - 2022-04-25
 ### Added
 - `PcSaftFunctional` now always uses `Joback` as ideal gas model if parameters are available. [#25](https://github.com/feos-org/feos-pcsaft/pull/25)
 - Added entropy scaling correlation parameters of viscosity and thermal conductivity for the homo-segmented group contribution method in `PcSaftRecord::from_segments`. [#30](https://github.com/feos-org/feos-pcsaft/pull/30)
