@@ -29,6 +29,7 @@ enum IdealGasContributions {
     Joback(Joback),
 }
 
+/// Customization options for the PC-SAFT equation of state and functional.
 #[derive(Copy, Clone)]
 pub struct PcSaftOptions {
     pub max_eta: f64,
@@ -48,6 +49,7 @@ impl Default for PcSaftOptions {
     }
 }
 
+/// PC-SAFT equation of state.
 pub struct PcSaft {
     parameters: Rc<PcSaftParameters>,
     options: PcSaftOptions,
