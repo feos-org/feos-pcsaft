@@ -24,6 +24,7 @@ mod hard_chain;
 mod polar;
 mod pure_saft_functional;
 
+/// PC-SAFT Helmholtz energy functional.
 pub struct PcSaftFunctional {
     pub parameters: Rc<PcSaftParameters>,
     fmt_version: FMTVersion,

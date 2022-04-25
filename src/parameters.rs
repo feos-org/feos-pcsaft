@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt::Write;
 
-/// PcSaft parameter set.
+/// PC-SAFT pure-component parameters.
 #[derive(Serialize, Deserialize, Clone, Default)]
 pub struct PcSaftRecord {
     /// Segment number
@@ -17,29 +17,30 @@ pub struct PcSaftRecord {
     /// Energetic parameter in units of Kelvin
     pub epsilon_k: f64,
     /// Dipole moment in units of Debye
-    #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mu: Option<f64>,
     /// Quadrupole moment in units of Debye
-    #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub q: Option<f64>,
-    #[serde(default)]
+    /// Association volume parameter
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kappa_ab: Option<f64>,
-    #[serde(default)]
+    /// Association energy parameter in units of Kelvin
     #[serde(skip_serializing_if = "Option::is_none")]
     pub epsilon_k_ab: Option<f64>,
-    #[serde(default)]
+    /// \# of association sites of type A
     #[serde(skip_serializing_if = "Option::is_none")]
     pub na: Option<f64>,
-    #[serde(default)]
+    /// \# of association sites of type B
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nb: Option<f64>,
+    /// Entropy scaling coefficients for the viscosity
     #[serde(skip_serializing_if = "Option::is_none")]
     pub viscosity: Option<[f64; 4]>,
+    /// Entropy scaling coefficients for the diffusion coefficient
     #[serde(skip_serializing_if = "Option::is_none")]
     pub diffusion: Option<[f64; 5]>,
+    /// Entropy scaling coefficients for the thermal conductivity
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thermal_conductivity: Option<[f64; 4]>,
 }
@@ -238,6 +239,7 @@ impl FromSegmentsBinary for PcSaftBinaryRecord {
     }
 }
 
+/// Parameter set required for the PC-SAFT equation of state and Helmholtz energy functional.
 pub struct PcSaftParameters {
     pub molarweight: Array1<f64>,
     pub m: Array1<f64>,
