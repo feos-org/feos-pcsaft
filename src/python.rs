@@ -1,15 +1,17 @@
 use crate::eos::polar::DQVariants;
-use crate::parameters::{PcSaftParameters, PcSaftRecord};
+use crate::parameters::{PcSaftBinaryRecord, PcSaftParameters, PcSaftRecord};
 use feos_core::joback::JobackRecord;
 use feos_core::parameter::{
-    BinaryRecord, IdentifierOption, Parameter, ParameterError, PureRecord, SegmentRecord,
+    BinaryRecord, Identifier, IdentifierOption, Parameter, ParameterError, PureRecord,
+    SegmentRecord,
 };
 use feos_core::python::joback::PyJobackRecord;
 use feos_core::python::parameter::{PyBinarySegmentRecord, PyChemicalRecord, PyIdentifier};
 use feos_core::*;
-use numpy::{PyArray2, ToPyArray};
+use numpy::{PyArray2, PyReadonlyArray2, ToPyArray};
+use pyo3::exceptions::PyTypeError;
 use pyo3::prelude::*;
-use std::convert::TryFrom;
+use std::convert::{TryFrom, TryInto};
 use std::rc::Rc;
 
 impl From<&str> for DQVariants {
@@ -133,6 +135,14 @@ impl_json_handling!(PyPcSaftRecord);
 impl_pure_record!(PcSaftRecord, PyPcSaftRecord, JobackRecord, PyJobackRecord);
 impl_segment_record!(PcSaftRecord, PyPcSaftRecord, JobackRecord, PyJobackRecord);
 
+#[pyclass(name = "PcSaftBinaryRecord", unsendable)]
+#[pyo3(
+    text_signature = "(pure_records, binary_records=None, substances=None, search_option='Name')"
+)]
+#[derive(Clone)]
+pub struct PyPcSaftBinaryRecord(PcSaftBinaryRecord);
+impl_binary_record!(PcSaftBinaryRecord, PyPcSaftBinaryRecord);
+
 /// Create a set of PC-SAFT parameters from records.
 ///
 /// Parameters
@@ -163,15 +173,6 @@ impl_parameter_from_segments!(PcSaftParameters, PyPcSaftParameters);
 
 #[pymethods]
 impl PyPcSaftParameters {
-    #[getter]
-    fn get_pure_records(&self) -> Vec<PyPureRecord> {
-        self.0
-            .pure_records
-            .iter()
-            .map(|r| PyPureRecord(r.clone()))
-            .collect()
-    }
-
     #[getter]
     fn get_k_ij<'py>(&self, py: Python<'py>) -> &'py PyArray2<f64> {
         self.0.k_ij.view().to_pyarray(py)

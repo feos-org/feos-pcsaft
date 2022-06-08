@@ -1,4 +1,5 @@
 #![allow(clippy::excessive_precision)]
+#![cfg(feature = "dft")]
 use approx::assert_relative_eq;
 use feos_core::parameter::{IdentifierOption, Parameter};
 use feos_core::{Contributions, PhaseEquilibrium, State};

@@ -8,7 +8,7 @@ use feos_dft::*;
 use feos_pcsaft::python::*;
 use feos_pcsaft::{PcSaftFunctional, PcSaftOptions};
 use numpy::*;
-use pyo3::exceptions::PyValueError;
+use pyo3::exceptions::{PyIndexError, PyValueError};
 use pyo3::prelude::*;
 use quantity::python::*;
 use quantity::si::*;

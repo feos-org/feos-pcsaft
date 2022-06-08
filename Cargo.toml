@@ -14,8 +14,9 @@ exclude = ["/.github/*", "*.ipynb", "/examples/*", "/parameters/*"]
 
 [dependencies]
 quantity = "0.5"
-feos-core = "0.2"
-feos-dft = "0.2"
+feos-core = { path = "../feos-core" }
+feos-dft = { path = "../feos-dft", optional = true }
+feos-campd = { path = "../feos-campd", optional = true }
 num-dual = "0.5"
 num-traits = "0.2"
 ndarray = { version = "0.15", features=["approx"] }
@@ -23,6 +24,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 indexmap = "1.8"
 lazy_static = "1.4"
+conv = "0.3"
 numpy = { version = "0.16", optional = true }
 pyo3 = { version = "0.16", optional = true }
 
@@ -31,4 +33,6 @@ approx = "0.4"
 
 [features]
 default = []
-python = ["pyo3", "quantity/python", "feos-core/python", "feos-dft/python", "numpy"]
+dft = ["feos-dft"]
+campd = ["feos-campd"]
+python = ["pyo3", "numpy", "feos-core/python", "feos-dft?/python"]
