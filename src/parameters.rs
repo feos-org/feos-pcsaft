@@ -1,5 +1,8 @@
+use conv::ValueInto;
 use feos_core::joback::JobackRecord;
-use feos_core::parameter::{FromSegments, FromSegmentsBinary, Parameter, PureRecord};
+use feos_core::parameter::{
+    FromSegments, FromSegmentsBinary, Parameter, ParameterError, PureRecord,
+};
 use ndarray::{Array, Array1, Array2};
 use num_traits::Zero;
 use quantity::si::{JOULE, KB, KELVIN};
@@ -45,41 +48,41 @@ pub struct PcSaftRecord {
     pub thermal_conductivity: Option<[f64; 4]>,
 }
 
-impl FromSegments for PcSaftRecord {
-    fn from_segments(segments: &[(Self, f64)]) -> Self {
+impl FromSegments<f64> for PcSaftRecord {
+    fn from_segments(segments: &[(Self, f64)]) -> Result<Self, ParameterError> {
         let mut m = 0.0;
         let mut sigma3 = 0.0;
         let mut epsilon_k = 0.0;
 
         segments.iter().for_each(|(s, n)| {
-            m += s.m * *n;
-            sigma3 += s.m * s.sigma.powi(3) * *n;
-            epsilon_k += s.m * s.epsilon_k * *n;
+            m += s.m * n;
+            sigma3 += s.m * s.sigma.powi(3) * n;
+            epsilon_k += s.m * s.epsilon_k * n;
         });
 
         let q = segments
             .iter()
-            .filter_map(|(s, n)| s.q.map(|q| q * *n))
+            .filter_map(|(s, n)| s.q.map(|q| q * n))
             .reduce(|a, b| a + b);
         let mu = segments
             .iter()
-            .filter_map(|(s, n)| s.mu.map(|mu| mu * *n))
+            .filter_map(|(s, n)| s.mu.map(|mu| mu * n))
             .reduce(|a, b| a + b);
         let kappa_ab = segments
             .iter()
-            .filter_map(|(s, n)| s.kappa_ab.map(|k| k * *n))
+            .filter_map(|(s, n)| s.kappa_ab.map(|k| k * n))
             .reduce(|a, b| a + b);
         let epsilon_k_ab = segments
             .iter()
-            .filter_map(|(s, n)| s.epsilon_k_ab.map(|e| e * *n))
+            .filter_map(|(s, n)| s.epsilon_k_ab.map(|e| e * n))
             .reduce(|a, b| a + b);
         let na = segments
             .iter()
-            .filter_map(|(s, n)| s.na.map(|na| na * *n))
+            .filter_map(|(s, n)| s.na.map(|na| na * n))
             .reduce(|a, b| a + b);
         let nb = segments
             .iter()
-            .filter_map(|(s, n)| s.nb.map(|nb| nb * *n))
+            .filter_map(|(s, n)| s.nb.map(|nb| nb * n))
             .reduce(|a, b| a + b);
 
         // entropy scaling
@@ -110,19 +113,19 @@ impl FromSegments for PcSaftRecord {
 
         let n_t = segments.iter().fold(0.0, |acc, (_, n)| acc + n);
         segments.iter().for_each(|(s, n)| {
-            let s3 = s.m * s.sigma.powi(3) * *n;
+            let s3 = s.m * s.sigma.powi(3) * n;
             if let Some(p) = viscosity.as_mut() {
                 let [a, b, c, d] = s.viscosity.unwrap();
                 p[0] += s3 * a;
                 p[1] += s3 * b / sigma3.powf(0.45);
-                p[2] += *n * c;
-                p[3] += *n * d;
+                p[2] += n * c;
+                p[3] += n * d;
             }
             if let Some(p) = thermal_conductivity.as_mut() {
                 let [a, b, c, d] = s.thermal_conductivity.unwrap();
-                p[0] += *n * a;
-                p[1] += *n * b;
-                p[2] += *n * c;
+                p[0] += n * a;
+                p[1] += n * b;
+                p[2] += n * c;
                 p[3] += n_t * d;
             }
             // if let Some(p) = diffusion.as_mut() {
@@ -136,7 +139,7 @@ impl FromSegments for PcSaftRecord {
         // correction due to difference in Chapman-Enskog reference between GC and regular formulation.
         viscosity = viscosity.map(|v| [v[0] - 0.5 * m.ln(), v[1], v[2], v[3]]);
 
-        Self {
+        Ok(Self {
             m,
             sigma: (sigma3 / m).cbrt(),
             epsilon_k: epsilon_k / m,
@@ -149,7 +152,49 @@ impl FromSegments for PcSaftRecord {
             viscosity,
             diffusion,
             thermal_conductivity,
+        })
+    }
+}
+
+impl FromSegments<usize> for PcSaftRecord {
+    fn from_segments(segments: &[(Self, usize)]) -> Result<Self, ParameterError> {
+        // We do not allow more than a single segment for q, mu, kappa_ab, epsilon_k_ab
+        let quadpole_comps = segments.iter().filter_map(|(s, _)| s.q).count();
+        if quadpole_comps > 1 {
+            return Err(ParameterError::IncompatibleParameters(format!(
+                "{quadpole_comps} segments with quadrupole moment."
+            )));
+        };
+        let dipole_comps = segments.iter().filter_map(|(s, _)| s.mu).count();
+        if dipole_comps > 1 {
+            return Err(ParameterError::IncompatibleParameters(format!(
+                "{dipole_comps} segment with dipole moment."
+            )));
+        };
+        let faulty_assoc_comps = segments
+            .iter()
+            .filter_map(|(s, _)| s.kappa_ab.xor(s.epsilon_k_ab))
+            .count();
+        if faulty_assoc_comps > 0 {
+            return Err(ParameterError::IncompatibleParameters(format!(
+                "Incorrectly specified association sites on {faulty_assoc_comps} segment(s)"
+            )));
         }
+        let assoc_comps = segments
+            .iter()
+            .filter_map(|(s, _)| s.kappa_ab.and(s.epsilon_k_ab))
+            .count();
+        if assoc_comps > 1 {
+            return Err(ParameterError::IncompatibleParameters(format!(
+                "{assoc_comps} segments with association sites."
+            )));
+        }
+        let segments: Vec<_> = segments
+            .iter()
+            .cloned()
+            .map(|(s, c)| (s, c as f64))
+            .collect();
+        Self::from_segments(&segments)
     }
 }
 
@@ -232,10 +277,25 @@ impl From<f64> for PcSaftBinaryRecord {
     }
 }
 
-impl FromSegmentsBinary for PcSaftBinaryRecord {
-    fn from_segments_binary(segments: &[(Self, f64, f64)]) -> Self {
-        let k_ij = segments.iter().map(|(br, n1, n2)| br.k_ij * n1 * n2).sum();
-        Self { k_ij }
+impl From<PcSaftBinaryRecord> for f64 {
+    fn from(binary_record: PcSaftBinaryRecord) -> Self {
+        binary_record.k_ij
+    }
+}
+
+impl<T: Copy + ValueInto<f64>> FromSegmentsBinary<T> for PcSaftBinaryRecord {
+    fn from_segments_binary(segments: &[(Self, T, T)]) -> Result<Self, ParameterError> {
+        let k_ij = segments
+            .iter()
+            .map(|(br, n1, n2)| br.k_ij * (*n1).value_into().unwrap() * (*n2).value_into().unwrap())
+            .sum();
+        Ok(Self { k_ij })
+    }
+}
+
+impl std::fmt::Display for PcSaftBinaryRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "PcSaftBinaryRecord(k_ij={})", self.k_ij)
     }
 }
 

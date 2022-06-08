@@ -3,7 +3,7 @@ use feos_pcsaft::python::PyPcSaftParameters;
 use feos_pcsaft::{PcSaft, PcSaftOptions};
 use numpy::convert::ToPyArray;
 use numpy::{PyArray1, PyArray2};
-use pyo3::exceptions::PyValueError;
+use pyo3::exceptions::{PyIndexError, PyValueError};
 use pyo3::prelude::*;
 use quantity::python::*;
 use quantity::si::*;
